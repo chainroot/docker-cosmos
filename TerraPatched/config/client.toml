@@ -1,0 +1,18 @@
+# This is a TOML config file.
+# For more information, see https://github.com/toml-lang/toml
+
+###############################################################################
+###                           Client Configuration                            ###
+###############################################################################
+
+# The network chain ID
+chain-id = "$CLIENT__CHAIN_ID"
+# The keyring's backend, where the keys are stored (os|file|kwallet|pass|test|memory)
+keyring-backend = "$CLIENT__KEYRING_BACKEND"
+# CLI output format (text|json)
+output = "$CLIENT__CLI_OUTPUT"
+# <host>:<port> to Tendermint RPC interface for this chain
+node = "$CLIENT__TENDERMINT_RPC_ADDR"
+# Transaction broadcasting mode (sync|async|block)
+broadcast-mode = "$CLIENT__BROADCAST_MODE"
+
