@@ -32,20 +32,20 @@ jobs:
 
       - name: Get branch name
         id: vars
-        run: echo ::set-output name=branch::${GITHUB_REF#refs/heads/}
+        run: echo ::set-output name=branch::$(echo ${GITHUB_REF#refs/heads/} | sed 's/\//-/g' | tr '[:upper:]' '[:lower:]')
 
       - name: Build and Push Docker images
         run: |
           find . -type f -name 'Dockerfile' -not -path "./.git/*" | while read -r file; do
-            IMAGE_NAME=chainroot/$(basename $(dirname "$file"))
+            DIR_NAME=$(basename $(dirname "$file"))
+            IMAGE_NAME="chainroot/$DIR_NAME"
             BRANCH_NAME=${{ steps.vars.outputs.branch }}
-            BRANCH_NAME=${BRANCH_NAME//\//-} # replace '/' with '-'
-            BRANCH_NAME=${BRANCH_NAME,,} # convert to lowercase
-                        
             TAGS="$IMAGE_NAME:$BRANCH_NAME"
             if [[ "$BRANCH_NAME" == "main" ]]; then
               TAGS="$TAGS,$IMAGE_NAME:latest"
             fi
+            pushd $(dirname "$file")
             docker buildx build -t $TAGS -f "$file" .
             docker push $TAGS
+            popd
           done
