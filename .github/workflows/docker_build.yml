@@ -45,7 +45,7 @@ jobs:
               TAGS="$TAGS,$IMAGE_NAME:latest"
             fi
             pushd $(dirname "$file")
-            docker buildx build -t $TAGS -f "$file" .
+            docker buildx build -t $TAGS -f Dockerfile .
             docker push $TAGS
             popd
           done
