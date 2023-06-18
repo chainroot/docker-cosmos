@@ -37,11 +37,11 @@ jobs:
       - name: Build and Push Docker images
         run: |
           find . -type f -name 'Dockerfile' -not -path "./.git/*" | while read -r file; do
-            IMAGE_NAME=chainroot/"$(dirname "$file")"
+            IMAGE_NAME=chainroot/$(basename $(dirname "$file"))
             BRANCH_NAME=${{ steps.vars.outputs.branch }}
-            BRANCH_NAME=${BRANCH_NAME//\//-}
-            BRANCH_NAME=${BRANCH_NAME,,}
-            
+            BRANCH_NAME=${BRANCH_NAME//\//-} # replace '/' with '-'
+            BRANCH_NAME=${BRANCH_NAME,,} # convert to lowercase
+                        
             TAGS="$IMAGE_NAME:$BRANCH_NAME"
             if [[ "$BRANCH_NAME" == "main" ]]; then
               TAGS="$TAGS,$IMAGE_NAME:latest"
