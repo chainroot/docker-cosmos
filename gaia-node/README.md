@@ -71,7 +71,7 @@ Certainly! Based on the provided variables and their descriptions, here's a sect
      - RPC Configuration: Customize the RPC settings by modifying the variables starting with `CONFIG__RPC_`. You can set the listening address, configure CORS settings, adjust maximum body/header size, enable TLS, and other RPC-related parameters.
      - Mempool Configuration: Modify the variables starting with `CONFIG__MEMPOOL_` to configure the behavior of the mempool. You can adjust the transaction count/size limits, cache size, and other mempool-related settings.
      - Consensus Configuration: Adjust the variables starting with `CONFIG__CONSENSUS_` to fine-tune the consensus parameters, such as propose/prevote/precommit timeouts, block creation interval, and other consensus-related settings.
-     -
+
 
  Prometheus: Enable/disable Prometheus metrics by modifying `CONFIG__PROMETHEUS_ENABLED` and configure the listening address and maximum connections using the corresponding variables.
 

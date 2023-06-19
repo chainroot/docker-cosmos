@@ -2,7 +2,7 @@ version: '3'
 
 services:
   terra-fullnode:
-    image: prism-finance/gaiapatched:v6.0.0
+    image: localhost/gaia:latest
     restart: always
     ulimits:
       nofile:
@@ -12,6 +12,6 @@ services:
     ports:
       - 26656:26656
       - 26657:26657
-    #In order to persist data
-    volumes:
-      - /opt/gaiafnd/data:/gaia/.gaia
+    # In order to persist data
+    #volumes:
+    #  - /opt/gaiafnd/data:/gaia/.gaia

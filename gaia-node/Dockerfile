@@ -1,9 +1,9 @@
 # Stage 1: Build stage
-FROM golang:1.19-alpine AS go-builder
+FROM golang:1.18-alpine AS go-builder
 ARG arch=x86_64
 
-ENV GAIA_VERSION=v7.1.0
-ENV LIBWASMVM_VERSION=v1.2.4
+ENV GAIA_VERSION=v9.1.1
+ENV LIBWASMVM_VERSION=v1.2.1
 ENV PACKAGES git cmake ca-certificates build-base curl make libc-dev bash gcc linux-headers eudev-dev python3 libusb-dev coreutils
 
 RUN set -eux; \
@@ -33,18 +33,15 @@ RUN sha256sum -c --ignore-missing --status checksums.txt && \
 ADD https://github.com/cosmos/gaia/archive/refs/tags/${GAIA_VERSION}.tar.gz ${GAIA_VERSION}.tar.gz
 RUN tar -xzf ${GAIA_VERSION}.tar.gz && \
   cd gaia-${GAIA_VERSION#v} && \
-  LEDGER_ENABLED=false BUILD_TAGS=muslc LDFLAGS="-linkmode=external -extldflags \"-L/code/mimalloc/build -lmimalloc -Wl,-z,muldefs -static\"" make install
+  LEDGER_ENABLED=true BUILD_TAGS=muslc LDFLAGS="-linkmode=external -extldflags \"-L/code/mimalloc/build -lmimalloc -Wl,-z,muldefs -static\"" make install
 
 # Stage 2: Final stage
-FROM alpine:3.16
-
-ENV DAEMON_NAME="gaiad"
-ENV DAEMON_HOME="/gaia/.gaia"
+FROM alpine:3
 
 RUN apk add --no-cache lz4 tar gettext && \
     addgroup -g 1211 gaia && \
     adduser -G gaia -u 1210 -D -h /gaia gaia && \
-    mkdir -p /gaia/.gaia/config /gaia/.gaia/data /gaia/.gaia/cosmovisor/genesis/bin /gaia/.gaia/cosmovisor/upgrades && \
+    mkdir -p /gaia/.gaia/config /gaia/.gaia/data && \
     chown gaia:gaia -R /gaia
 
 COPY ./config /gaia/config-sample
