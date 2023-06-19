@@ -23,9 +23,4 @@ if [ ! -f $HOME/.gaia/config/genesis.json ]; then
   fi
 fi
 
-if [ ! -f $HOME/.gaia/cosmovisor/current/bin/gaiad ]; then
-  #Init Cosmovisor
-  cosmovisor init /usr/local/bin/gaiad
-fi
-
-cosmovisor run start
+gaiad start
