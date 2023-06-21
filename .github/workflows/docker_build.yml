@@ -42,7 +42,7 @@ jobs:
             BRANCH_NAME=${{ steps.vars.outputs.branch }}
             TAGS="$IMAGE_NAME:$BRANCH_NAME"
             if [[ "$BRANCH_NAME" == "main" ]]; then
-              TAGS="$TAGS,$IMAGE_NAME:latest"
+              TAGS="$IMAGE_NAME:latest"
             fi
             pushd $(dirname "$file")
             docker buildx build -t $TAGS --push -f Dockerfile .
