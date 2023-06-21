@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  terra-fullnode:
+  cosmos:
     image: gaia:latest
     restart: always
     ulimits:
@@ -14,4 +14,4 @@ services:
       - 26657:26657
     # In order to persist data
     volumes:
-     - ./gaiafnd:/gaia/.gaia
+     - ./data:/gaia/.gaia

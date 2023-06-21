@@ -1,8 +1,8 @@
 version: '3'
 
 services:
-  terra-fullnode:
-    image: prism-finance/terrapatched:v2.1.4
+  terra:
+    image: terra:latest
     restart: always
     ulimits:
       nofile:
@@ -12,6 +12,5 @@ services:
     ports:
       - 26656:26656
       - 26657:26657
-    #In order to persist data
     volumes:
-      - /opt/terrafnd/data:/terra/.terra
+      - ./data:/terra/.terra

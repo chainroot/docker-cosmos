@@ -1,9 +1,9 @@
 # Stage 1: Build stage
-FROM golang:1.18-alpine AS go-builder
+FROM golang:1.19-alpine AS go-builder
 ARG arch=x86_64
 
-ENV GAIA_VERSION=v9.1.1
-ENV LIBWASMVM_VERSION=v1.2.1
+ENV OSMO_VERSION=v15.1.2
+ENV LIBWASMVM_VERSION=v1.1.2
 ENV PACKAGES git cmake ca-certificates build-base curl make libc-dev bash gcc linux-headers eudev-dev python3 libusb-dev coreutils
 
 RUN set -eux; \
@@ -29,32 +29,33 @@ ADD https://github.com/CosmWasm/wasmvm/releases/download/${LIBWASMVM_VERSION}/ch
 RUN sha256sum -c --ignore-missing --status checksums.txt && \
     cp libwasmvm_muslc.`uname -m`.a /lib/libwasmvm_muslc.a
 
-# Download Gaia and extract tgz
-ADD https://github.com/cosmos/gaia/archive/refs/tags/${GAIA_VERSION}.tar.gz ${GAIA_VERSION}.tar.gz
-RUN tar -xzf ${GAIA_VERSION}.tar.gz && \
-  cd gaia-${GAIA_VERSION#v} && \
+# Download Osmo and extract tgz 
+ADD https://github.com/osmosis-labs/osmosis/archive/refs/tags/${OSMO_VERSION}.tar.gz ${OSMO_VERSION}.tar.gz
+RUN tar xzf ${OSMO_VERSION}.tar.gz && \
+  cd osmosis-${OSMO_VERSION#v} && \
   LEDGER_ENABLED=true BUILD_TAGS=muslc LDFLAGS="-linkmode=external -extldflags \"-L/code/mimalloc/build -lmimalloc -Wl,-z,muldefs -static\"" make install
 
 # Stage 2: Final stage
 FROM alpine:3
 
 RUN apk add --no-cache lz4 tar gettext && \
-    addgroup -g 1211 gaia && \
-    adduser -G gaia -u 1210 -D -h /gaia gaia && \
-    mkdir -p /gaia/.gaia/config /gaia/.gaia/data && \
-    chown gaia:gaia -R /gaia
+    addgroup -g 1211 osmosis && \
+    adduser -G osmosis -u 1210 -D -h /osmosis osmosis && \
+    mkdir -p /osmosis/.osmosisd/config /osmosis/.osmosisd/data && \
+    chown osmosis:osmosis -R /osmosis
 
-COPY ./config /gaia/config-sample
-COPY ./entrypoint.sh /gaia
-RUN chown gaia:gaia /gaia/entrypoint.sh && \
-    chmod +x /gaia/entrypoint.sh
+COPY ./config /osmosis/config-sample
+COPY ./entrypoint.sh /osmosis
 
-USER gaia
-WORKDIR /gaia
+RUN chown osmosis:osmosis /osmosis/entrypoint.sh && \
+    chmod +x /osmosis/entrypoint.sh
 
-COPY --from=go-builder /go/bin/gaiad /usr/local/bin/gaiad
+USER osmosis
+WORKDIR /osmosis
+
+COPY --from=go-builder /go/bin/osmosisd /usr/local/bin/osmosisd
 
 # rest, grpc, p2p, rpc
 EXPOSE 1317 9090 26656 26657
 
-CMD ["sh", "-c", "/gaia/entrypoint.sh"]
+CMD ["sh", "-c", "/osmosis/entrypoint.sh"]

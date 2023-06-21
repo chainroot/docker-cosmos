@@ -1,8 +1,8 @@
 version: '3'
 
 services:
-  terra-fullnode:
-    image: prism-finance/gaiapatched:v6.0.0
+  osmosis:
+    image: osmosis:latest
     restart: always
     ulimits:
       nofile:
@@ -14,4 +14,4 @@ services:
       - 26657:26657
     #In order to persist data
     volumes:
-      - /opt/gaiafnd/data:/gaia/.gaia
+      - ./data:/osmosis/.osmosisd
