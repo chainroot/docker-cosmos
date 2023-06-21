@@ -2,7 +2,6 @@
 
 CONFIG_PATH=$HOME/.gaia/config
 
-# Create necessary directories
 mkdir -p $CONFIG_PATH
 
 envsubst < $HOME/config-sample/app.toml > $CONFIG_PATH/app.toml

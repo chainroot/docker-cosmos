@@ -41,7 +41,6 @@ FROM alpine:3
 RUN apk add --no-cache lz4 tar gettext && \
     addgroup -g 1211 osmosis && \
     adduser -G osmosis -u 1210 -D -h /osmosis osmosis && \
-    mkdir -p /osmosis/.osmosisd/config /osmosis/.osmosisd/data && \
     chown osmosis:osmosis -R /osmosis
 
 COPY ./config /osmosis/config-sample

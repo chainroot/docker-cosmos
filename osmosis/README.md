@@ -1,17 +1,17 @@
-# TerraPatched
-Patched and updated Terra Docker image with automated config input.
+# Osmosis
+Patched and updated Osmosis Docker image with automated config input.
 
-This repo is meant to make Terra docker image more up to date and more cloud native.
+This repo is meant to make Osmosis docker image more up to date and more cloud native.
 multiple changes has been made through this repository:
 
-- LibwasmVM version has been bumped. (v1.1.1)
-- Terra core version has been bumped. (v2.1.4)
- - Cosmovisor has been added in order to manage Terrad.
- - Entrypoint script has been added to start a full node automatically.
- - all config files has been embedded through docker image and they are configurable via environment variables.
+    - LibwasmVM version has been bumped. (v1.1.2)
+    - Osmosis core version has been bumped. (v15.1.2)
+    - Cosmovisor has been added in order to manage Osmosisd.
+    - Entrypoint script has been added to start a full node automatically.
+    - all config files has been embedded through docker image and they are configurable via environment variables.
 
 
-These changes will help you to deploy Terra in a cloud-native environment easier.
+These changes will help you to deploy Osmosis in a cloud-native environment easier.
 
 ## Entrypoint Script
 
@@ -21,7 +21,6 @@ The script uses snapshot restore method in order to bootstrap node sync.
  - Disable snapshot restore method by `SNAPSHOT__ENABLED`.
 
 >**Note**
-> By disabling snapshot restore the node start syncing from scratch.
 > By default we are using polkachu snapshot files, regarding that lz4 is preinstalled in the container.
 
 ## Environment variables

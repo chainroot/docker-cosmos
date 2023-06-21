@@ -1,18 +1,15 @@
-# TerraPatched
+# Cosmos
 ..
-Patched and updated Terra Docker image with automated config input.
+Patched and updated Cosmos Docker image with automated config input.
 
-This repo is meant to make Terra docker image more up to date and more cloud native.
+This repo is meant to make Cosmos docker image more up to date and more cloud native.
 multiple changes has been made through this repository:
 
-- LibwasmVM version has been bumped. (v1.1.1)
-- Terra core version has been bumped. (v2.1.4)
- - Cosmovisor has been added in order to manage Terrad.
- - Entrypoint script has been added to start a full node automatically.
- - all config files has been embedded through docker image and they are configurable via environment variables.
+   - Cosmos core version has been bumped. (10.0.1)
+   - Entrypoint script has been added to start a full node automatically.
+   - all config files has been embedded through docker image and they are configurable via environment variables.
 
-
-These changes will help you to deploy Terra in a cloud-native environment easier.
+These changes will help you to deploy Cosmos in a cloud-native environment easier.
 
 ## Entrypoint Script
 
@@ -47,7 +44,7 @@ Certainly! Based on the provided variables and their descriptions, here's a sect
    - `SNAPSHOT_BLOCK_HEIGHT`: If you want to start the node from a specific block height, you can modify this variable to set the desired snapshot block height.
 
 2. **App Configuration**:
-   - The app configuration variables control various aspects of the Terra node. You can adjust these variables according to your requirements:
+   - The app configuration variables control various aspects of the Cosmos node. You can adjust these variables according to your requirements:
      - Pruning: The variables starting with `APP__PRUNE_` determine the pruning settings. You can customize the pruning method, the number of recent blocks to keep, and the interval between pruning.
      - Telemetry: Adjust the telemetry-related variables (`APP__TELEMETRY_`) to enable or disable telemetry and configure its settings.
      - API: Customize the API settings by modifying variables starting with `APP__API_`. You can enable/disable the API, set the listening address, configure maximum connections, timeouts, and other API-related parameters.
@@ -55,14 +52,14 @@ Certainly! Based on the provided variables and their descriptions, here's a sect
      - gRPC: Adjust the gRPC-related variables (`APP__GRPC_`) to enable/disable gRPC, set the listening address, enable/disable gRPC Web, and configure CORS settings.
 
 3. **Client Configuration**:
-   - The client configuration variables control the behavior of the Terra client. You can customize these variables based on your needs:
+   - The client configuration variables control the behavior of the Cosmos client. You can customize these variables based on your needs:
      - Chain ID: Set `CLIENT__CHAIN_ID` to the desired chain ID.
      - Keyring Backend: Choose the keyring backend (`CLIENT__KEYRING_BACKEND`) that suits your requirements.
      - CLI Output: Modify `CLIENT__CLI_OUTPUT` to specify the output format of the CLI commands.
      - Tendermint RPC Address: Set `CLIENT__TENDERMINT_RPC_ADDR` to the address of the Tendermint RPC server.
 
 4. **Config Configuration**:
-   - The config configuration variables control the settings of the Terra node. You can modify these variables as follows:
+   - The config configuration variables control the settings of the Cosmos node. You can modify these variables as follows:
      - Moniker Name: Change `CONFIG__MONIKER_NAME` to set a unique moniker for your node.
      - Backend DB: Choose the backend database (`CONFIG__BACKEND_DB`) that you want to use, such as GoLevelDB or another supported database.
      - Log Level and Format: Adjust `CONFIG__LOG_LEVEL` and `CONFIG__LOG_FORMAT` to customize the log level and format.
@@ -75,7 +72,7 @@ Certainly! Based on the provided variables and their descriptions, here's a sect
 
  Prometheus: Enable/disable Prometheus metrics by modifying `CONFIG__PROMETHEUS_ENABLED` and configure the listening address and maximum connections using the corresponding variables.
 
-These tips provide an overview of the variables and their configurations. It's important to refer to the Terra documentation or consult the project's maintainers for detailed guidance on customizing these variables based on the specific requirements of the Terra blockchain and the node daemon you are using.
+These tips provide an overview of the variables and their configurations. It's important to refer to the Cosmos documentation or consult the project's maintainers for detailed guidance on customizing these variables based on the specific requirements of the Cosmos blockchain and the node daemon you are using.
 
 <details>
     <summary>Click to expand/collapse</summary>
@@ -143,7 +140,7 @@ These tips provide an overview of the variables and their configurations. It's i
 | Variable                   | Description                           | Default Value  |
 |----------------------------|---------------------------------------|----------------|
 | CONFIG__ABCI_LADDR         | ABCI listening address                 | "tcp://127.0.0.1:26658" |
-| CONFIG__MONIKER_NAME       | Moniker name                           | "PRISM Protocol" |
+| CONFIG__MONIKER_NAME       | Moniker name                           | "Chainroot OSS" |
 | CONFIG__FAST_SYNC_ENABLED  | Fast sync enabled                      | true           |
 | CONFIG__BACKEND_DB         | Backend database                       | "goleveldb"    |
 | CONFIG__DB_DIR             | Database directory                     | "data"         |

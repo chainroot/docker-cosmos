@@ -21,18 +21,18 @@ if [ ! -f $CONFIG_PATH/genesis.json ]; then
     # download genesis
     wget -O $HOME/.osmosisd/config/genesis.json https://github.com/osmosis-labs/networks/raw/main/osmosis-1/genesis.json
 
-  # testnet
+  # testnet TODO: automate with toolchain
   elif [ $CLIENT__CHAIN_ID = "osmo-test-4" ]; then
+    URL=$(wget -O - https://dl2.quicksync.io/json/osmosis.json | jq -r '.[] |select(.file=="osmotestnet-4-pruned")|select (.mirror=="Netherlands")|.url')
+    wget -O - $URL | lz4 -d | tar -x -C $HOME/.osmosisd
+
     SEEDS="0f9a9c694c46bd28ad9ad6126e923993fc6c56b1@137.184.181.105:26656"
     PPEERS="4ab030b7fd75ed895c48bcc899b99c17a396736b@137.184.190.127:26656,3dbffa30baab16cc8597df02945dcee0aa0a4581@143.198.139.33:26656"
-    sed -i.bak -e "s/^seeds *=.*/seeds = \"$SEEDS\"/" $HOME/.terra/config/config.toml
-    sed -i.bak -e "s/^persistent_peers *=.*/persistent_peers = \"$PPEERS\"/" $HOME/.terra/config/config.toml
+    sed -i.bak -e "s/^seeds *=.*/seeds = \"$SEEDS\"/" $HOME/.osmosisd/config/config.toml
+    sed -i.bak -e "s/^persistent_peers *=.*/persistent_peers = \"$PPEERS\"/" $HOME/.osmosisd/config/config.toml
     cd $HOME/.osmosisd/config
     wget https://github.com/osmosis-labs/networks/raw/main/osmo-test-4/genesis.tar.bz2
     tar -xjf genesis.tar.bz2 && rm genesis.tar.bz2
-    URL=$(wget -O - https://dl2.quicksync.io/json/osmosis.json | jq -r '.[] |select(.file=="osmotestnet-4-pruned")|select (.mirror=="Netherlands")|.url')
-    cd $HOME/.osmosisd/
-    wget -O - $URL | lz4 -d | tar -xvf -
   fi
 fi
 
