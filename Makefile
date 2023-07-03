@@ -28,7 +28,9 @@ build:
 .PHONY: push
 push:
 	@echo "****> Pushing $(DIR) -- $(IMAGE_NAME):$(TAG)"
-	@docker push $(IMAGE_NAME):$(TAG)
+	@pushd $(DIR) && \
+	  docker buildx build --push -t $(IMAGE_NAME):$(TAG) -f Dockerfile . && \
+	  popd
 
 .PHONY: buildall
 buildall:
@@ -66,4 +68,4 @@ help:
 	@echo "  help      - Display this help message"
 
 .PHONY: all
-all: lint buildall pushall
+all: buildall
