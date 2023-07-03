@@ -11,16 +11,19 @@ TAG ?= $(shell git describe --tags --exact-match 2>/dev/null || ([ "$(BRANCH_NAM
 
 .PHONY: lint
 lint:
-	@echo "****> Linting Dockerfiles"
+	@echo "****> Linting $(DIRS)"
 	@for dir in $(DIRS); do \
-		echo "****> Linting Dockerfile for $$dir; \
-		docker run --rm -i hadolint/hadolint < "$$dir/Dockerfile" || true; \
+		echo "****> Linting Dockerfiles in $$dir"; \
+		docker run --rm -i hadolint/hadolint \
+		  hadolint --no-fail - < $$dir/Dockerfile; \
 	done
 
 .PHONY: build
 build:
 	@echo "****> Building $(DIR) -- $(IMAGE_NAME):$(TAG)"
-	@pushd $(DIR) && docker buildx build -t $(IMAGE_NAME):$(TAG) -f Dockerfile . && popd
+	@pushd $(DIR) && \
+	  docker buildx build -t $(IMAGE_NAME):$(TAG) -f Dockerfile . && \
+	  popd
 
 .PHONY: push
 push:
@@ -63,4 +66,4 @@ help:
 	@echo "  help      - Display this help message"
 
 .PHONY: all
-all: lint buildall
+all: lint buildall pushall
