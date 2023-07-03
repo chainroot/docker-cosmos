@@ -1,74 +1,55 @@
 SHELL = /bin/bash -e
 
+# Common variables
+DIRS := $(shell ls */Dockerfile | xargs dirname)
+IMAGE_NAME = chainroot/$$DIR
+BRANCH_NAME := $(shell git symbolic-ref -q --short HEAD)
+
+# set TAG to git tag if it exists, otherwise use branch name. use latest for main branch.
+TAG ?= $(shell git describe --tags --exact-match 2>/dev/null || ([ "$(BRANCH_NAME)" = "main" ] && echo latest || echo $(BRANCH_NAME)))
+
+
 .PHONY: lint
 lint:
-	find . -type f -name 'Dockerfile' -not -path "./.git/*" | while read -r file; do \
-		echo "****> Linting Dockerfile in directory: $$(dirname "$$file")"; \
-		docker run --rm -i hadolint/hadolint < "$$file" || true; \
+	@echo "****> Linting Dockerfiles"
+	@for dir in $(DIRS); do \
+		echo "****> Linting Dockerfile for $$dir; \
+		docker run --rm -i hadolint/hadolint < "$$dir/Dockerfile" || true; \
 	done
 
 .PHONY: build
 build:
-	@echo "****> Building Docker image in directory: $(DIR)"; \
-	DIR_NAME=$$(basename $(DIR)); \
-	IMAGE_NAME="chainroot/$$DIR_NAME"; \
-	BRANCH_NAME=$$(git rev-parse --abbrev-ref HEAD); \
-	TAGS="$$IMAGE_NAME:$$BRANCH_NAME"; \
-	if [[ "$$BRANCH_NAME" == "main" ]]; then \
-		TAGS="$$IMAGE_NAME:latest"; \
-	fi; \
-	pushd $(DIR); \
-	docker buildx build -t $$TAGS -f Dockerfile .; \
-	popd
+	@echo "****> Building $(DIR) -- $(IMAGE_NAME):$(TAG)"
+	@pushd $(DIR) && docker buildx build -t $(IMAGE_NAME):$(TAG) -f Dockerfile . && popd
 
 .PHONY: push
 push:
-	@echo "****> Pushing Docker image in directory: $(DIR)"; \
-	DIR_NAME=$$(basename $(DIR)); \
-	IMAGE_NAME="chainroot/$$DIR_NAME"; \
-	BRANCH_NAME=$$(git rev-parse --abbrev-ref HEAD); \
-	TAGS="$$IMAGE_NAME:$$BRANCH_NAME"; \
-	if [[ "$$BRANCH_NAME" == "main" ]]; then \
-		TAGS="$$IMAGE_NAME:latest"; \
-	fi; \
-	docker push $$TAGS
+	@echo "****> Pushing $(DIR) -- $(IMAGE_NAME):$(TAG)"
+	@docker push $(IMAGE_NAME):$(TAG)
 
 .PHONY: buildall
 buildall:
-	find . -type f -name 'Dockerfile' -not -path "./.git/*" | while read -r file; do \
-		make build DIR=$$(dirname "$$file"); \
+	@echo "****> Building: $(DIRS)"
+	@for dir in $(DIRS); do \
+		make build DIR=$$dir; \
 	done
 
 .PHONY: pushall
 pushall:
-	find . -type f -name 'Dockerfile' -not -path "./.git/*" | while read -r file; do \
-		make push DIR=$$(dirname "$$file"); \
+	@echo "****> Pushing: $(DIRS)"
+	@for dir in $(DIRS); do \
+		make push DIR=$$dir; \
 	done
 
 .PHONY: clean
 clean:
-	@echo "****> Removing Docker image in directory: $(DIR)"; \
-	DIR_NAME=$$(basename $(DIR)); \
-	IMAGE_NAME="chainroot/$$DIR_NAME"; \
-	BRANCH_NAME=$$(git rev-parse --abbrev-ref HEAD); \
-	TAGS="$$IMAGE_NAME:$$BRANCH_NAME"; \
-	if [[ "$$BRANCH_NAME" == "main" ]]; then \
-		TAGS="$$IMAGE_NAME:latest"; \
-	fi; \
-	docker rmi $$TAGS
+	@echo "****> Removing $(DIR) -- $(IMAGE_NAME):$(TAG)"
+	@docker rmi $(IMAGE_NAME):$(TAG)
 
 .PHONY: test
 test:
-	@echo "****> Testing Docker image in directory: $(DIR)"; \
-	DIR_NAME=$$(basename $(DIR)); \
-	IMAGE_NAME="chainroot/$$DIR_NAME"; \
-	BRANCH_NAME=$$(git rev-parse --abbrev-ref HEAD); \
-	TAGS="$$IMAGE_NAME:$$BRANCH_NAME"; \
-	if [[ "$$BRANCH_NAME" == "main" ]]; then \
-		TAGS="$$IMAGE_NAME:latest"; \
-	fi; \
-	docker run -d --name test $$TAGS; \
-	docker ps | grep test
+	@echo "****> Testing $(DIR) -- $(IMAGE_NAME):$(TAG)"
+	@docker run --rm --name $(TAG) $(IMAGE_NAME):$(TAG)
 
 .PHONY: help
 help:
@@ -79,7 +60,6 @@ help:
 	@echo "  buildall  - Build all Docker images"
 	@echo "  pushall   - Push all Docker images"
 	@echo "  clean     - Remove Docker image"
-	@echo "  test      - Test Docker image"
 	@echo "  help      - Display this help message"
 
 .PHONY: all
