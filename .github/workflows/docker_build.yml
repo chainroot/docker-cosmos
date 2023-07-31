@@ -29,15 +29,11 @@ jobs:
         id: changed_files
         uses: tj-actions/changed-files@v37
 
-      - name: Get changed folders
-        id: changed_folders
+      - name: List all changed files
         run: |
-          changed_folders=$(echo "${{ steps.changed_files.outputs.all_changed_files }}" | tr ' ' '\n' | cut -d/ -f1 | sort -u | grep -v '^\.' | tr '\n' ' ')
-          echo "::set-output name=folders::$changed_folders"
-      
-      - name: Display changed folders
-        run: |
-          echo "Changed folders: ${{ steps.changed_folders.outputs.folders }}"
+          for file in ${{ steps.changed_files.outputs.all_changed_files }}; do
+            echo "$file was changed"
+          done
 
       - name: Push to DockerHub
         run: for folder in ${{ steps.changed_folders.outputs.folders }}; do make push-$folder; done
