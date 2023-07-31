@@ -1,5 +1,5 @@
 # Stage 1: Build stage
-FROM golang:1.19-alpine AS go-builder
+FROM golang:1.20-alpine AS go-builder
 ARG arch=x86_64
 
 ENV OSMO_VERSION=v16.1.1
