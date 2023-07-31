@@ -28,6 +28,8 @@ jobs:
       - name: Get changed files
         id: changed_files
         uses: tj-actions/changed-files@v37
+        with:
+          since_last_remote_commit: false
 
       - name: List all changed files
         run: |
