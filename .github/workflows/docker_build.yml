@@ -1,8 +1,7 @@
 name: Lint, Build, and Push
 on:
-  push:
-    branches-ignore:
-      - none
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   build:
@@ -28,8 +27,8 @@ jobs:
       - name: Get changed files
         id: changed_files
         uses: tj-actions/changed-files@v37
-        with:
-          since_last_remote_commit: false
+        # with:
+        #   since_last_remote_commit: false
 
       - name: List all changed files
         run: |
