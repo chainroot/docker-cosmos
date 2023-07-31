@@ -37,6 +37,7 @@ jobs:
 
       - name: Push to DockerHub
         run:
-          for folder in ${{ steps.changed_files.outputs.all_changed_files }}; do
-          make push-$folder BRANCH_NAME=${{ env.BRANCH_NAME }};
+          for DIR in ${{ steps.changed_files.outputs.all_changed_files }}; do
+          docker pull chainroot/$DIR:latest || true;
+          make push-$DIR BRANCH_NAME=${{ env.BRANCH_NAME }};
           done
