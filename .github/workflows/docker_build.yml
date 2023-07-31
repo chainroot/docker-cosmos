@@ -11,6 +11,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+      
+      - name: Get branch name
+        run: echo "BRANCH_NAME=${{ github.head_ref }}" >> $GITHUB_ENV
 
       - name: Lint
         run: make lint
@@ -34,5 +37,5 @@ jobs:
 
       - name: Push to DockerHub
         run: for folder in ${{ steps.changed_files.outputs.all_changed_files }}; do 
-            make push-$folder;
+            make push-$folder BRANCH_NAME=${{ env.BRANCH_NAME }};
           done
