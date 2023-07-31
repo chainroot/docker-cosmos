@@ -11,30 +11,30 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Lint
         run: make lint
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
       - name: Docker Login
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      - name: Get All Changed Files
-        id: files
-        uses: jitterbit/get-changed-files@v1
+      - name: Get changed files
+        id: changed_files
+        uses: tj-actions/changed-files@v37
 
       - name: Get changed folders
         id: changed_folders
         run: |
-          changed_folders=$(echo "${{ steps.files.outputs.all }}" | tr ' ' '\n' | cut -d/ -f1 | sort -u | grep -v '^\.' | tr '\n' ' ')
+          changed_folders=$(echo "${{ steps.changed_files.outputs.all_changed_files }}" | tr ' ' '\n' | cut -d/ -f1 | sort -u | grep -v '^\.' | tr '\n' ' ')
           echo "::set-output name=folders::$changed_folders"
-
+      
       - name: Display changed folders
         run: |
           echo "Changed folders: ${{ steps.changed_folders.outputs.folders }}"
