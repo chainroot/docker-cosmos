@@ -25,5 +25,15 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
+      - name: Get changed folders
+        id: changed_folders
+        run: |
+          changed_folders=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | cut -d/ -f1 | sort -u | grep -v '^\.')
+          echo "::set-output name=folders::$changed_folders"
+
+      - name: Display changed folders
+        run: |
+          echo "Changed folders: ${{ steps.changed_folders.outputs.folders }}"
+
       - name: Push to DockerHub
-        run: make pushall
+        run: for folder in ${{ steps.changed_folders.outputs.folders }}; do make push-$folder; done
