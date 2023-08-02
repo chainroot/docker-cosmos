@@ -16,3 +16,9 @@ node = "$CLIENT__TENDERMINT_RPC_ADDR"
 # Transaction broadcasting mode (sync|async|block)
 broadcast-mode = "$CLIENT__BROADCAST_MODE"
 
+## Added in v15.2 https://github.com/osmosis-labs/osmosis/pull/5020
+# Amount of gas per transaction
+gas = "$CLIENT__GAS"
+# Price per unit of gas
+gas-prices = "$CLIENT__GAS_PRICES"
+gas-adjustment = "$CLIENT__GAS_ADJUSTMENT"
