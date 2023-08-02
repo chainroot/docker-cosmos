@@ -2,7 +2,7 @@ version: '3'
 
 services:
   osmosis:
-    image: osmosis:latest
+    image: chainroot/osmosis:latest
     restart: always
     ulimits:
       nofile:
