@@ -16,7 +16,7 @@ if [ ! -f $CONFIG_PATH/genesis.json ]; then
     #Extract data
     lz4 -c -d snapshot.tar.lz4  | tar -x -C $HOME/.stride
 
-  elif [$CLIENT__CHAIN_ID = "stride-testnet-1" ];
+  elif [$CLIENT__CHAIN_ID = "stride-testnet-1" ]; then
     wget -O $CONFIG_PATH/genesis.json https://snapshots.polkachu.com/testnet-genesis/stride/genesis.json 
     wget -O $CONFIG_PATH/addrbook.json https://snapshots.polkachu.com/testnet-addrbook/stride/addrbook.json
     #Download snapshot
