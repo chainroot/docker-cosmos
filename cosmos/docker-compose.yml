@@ -2,7 +2,7 @@ version: '3'
 
 services:
   cosmos:
-    image: gaia:latest
+    image: chainroot/cosmos:latest
     restart: always
     ulimits:
       nofile:

@@ -2,7 +2,7 @@ version: '3'
 
 services:
   terra:
-    image: terra:latest
+    image: chainroot/terra:latest
     restart: always
     ulimits:
       nofile:
