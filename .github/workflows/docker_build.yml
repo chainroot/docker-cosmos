@@ -16,7 +16,6 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Get branch name
-        id: branch-name
         run: echo "BRANCH_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
         env:
           GITHUB_REF: ${{ github.ref }}
