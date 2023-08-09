@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  stride:
+    image: chainroot/stride:latest
+    restart: always
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    env_file: .env
+    ports:
+      - 26656:26656
+      - 26657:26657
+    # In order to persist data
+    volumes:
+     - ./data:/stride/.stride
