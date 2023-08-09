@@ -1,46 +1,36 @@
-# Osmosis
-Patched and updated Osmosis Docker image with automated config input.
+# osmosis
+Patched and updated osmosis Docker image with automated config input.
 
-This repo is meant to make Osmosis docker image more up to date and more cloud native.
+This repo is meant to make osmosis docker image more up to date and more cloud native.
 multiple changes has been made through this repository:
 
-    - LibwasmVM version has been bumped. (v1.1.2)
-    - Osmosis core version has been bumped. (v15.1.2)
-    - Cosmovisor has been added in order to manage Osmosisd.
-    - Entrypoint script has been added to start a full node automatically.
-    - all config files has been embedded through docker image and they are configurable via environment variables.
+- LibwasmVM version has been bumped. (v1.2.3)
+- osmosis core version has been bumped. (v16.1.1)
+ - Entrypoint script has been added to start a full node automatically.
+ - all config files has been embedded through docker image and they are configurable via environment variables.
 
 
-These changes will help you to deploy Osmosis in a cloud-native environment easier.
-
-## Entrypoint Script
-
-The script uses snapshot restore method in order to bootstrap node sync.
- - Configure snapshot download URL via `SNAPSHOT__URL`.
- - Configure snapshot file name via `SNAPSHOT__FILENAME`.
- - Disable snapshot restore method by `SNAPSHOT__ENABLED`.
+These changes will help you to deploy osmosis in a cloud-native environment easier.
 
 >**Note**
+> By disabling snapshot restore the node start syncing from scratch.
 > By default we are using polkachu snapshot files, regarding that lz4 is preinstalled in the container.
 
 ## Environment variables
 
-The provided `.env.example` provides you a good set of defaults to start with. You should set some of the mandatory environments such as moniker, network name, etc.
+The provided `.env` provides you a good set of defaults to start with. You should set some of the mandatory environments such as moniker, network name, etc.
 
-The environment variables convention follows the template below:
- - CONFIGFILENAME__SECTION_PARAMETER
+## Network Specific variables
 
-so for example `APP__API_ENABLED` indicates that this environment variable will be replaced in `app.toml` file and its related to enabling or disabling API. The table below indicates each var type, default value, and mandatory vars that should be changed.
+These are the configuration in osmosis network that is extra compared to the base cosmos environment variable set.
 
-| Variable Name | Type | Default Value | Should be changed |
-|--|--|--|--|
-|  |  |  |
- 
-.
+| Variable            |       Value        |
+|---------------------|--------------------|
+| CLIENT__GAS                |  1000000    |
+| CLIENT__GAS_PRICES         |  0.005uosmo |
+| CLIENT__GAS_ADJUSTMENT     |  1.5        |
 
 ## TODO
-
- - Add autobuild github workflow.
  - Add README badges.
  - Add automate version bump.
 
