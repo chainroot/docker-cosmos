@@ -54,4 +54,4 @@ COPY --from=go-builder /go/bin/strided /usr/local/bin/strided
 # rest, grpc, p2p, rpc
 EXPOSE 1317 9090 26656 26657
 
-CMD ["sh", "-c", "/stride/entrypoint.sh"]
+CMD ["sh", "-c", "/stride/entrypoint.sh"] 
