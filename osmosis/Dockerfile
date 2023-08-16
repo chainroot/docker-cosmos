@@ -33,7 +33,7 @@ RUN sha256sum -c --ignore-missing --status checksums.txt && \
 ADD https://github.com/osmosis-labs/osmosis/archive/refs/tags/${OSMO_VERSION}.tar.gz ${OSMO_VERSION}.tar.gz
 RUN tar xzf ${OSMO_VERSION}.tar.gz && \
   cd osmosis-${OSMO_VERSION#v} && \
-  LEDGER_ENABLED=true BUILD_TAGS=muslc LDFLAGS="-linkmode=external -extldflags \"-L/code/mimalloc/build -lmimalloc -Wl,-z,muldefs -static\"" make install
+  LEDGER_ENABLED=true BUILD_TAGS=muslc LDFLAGS="-linkmode=external -extldflags \"-L/code/mimalloc/build -lmimalloc -Wl,-z,muldefs -static\"" make install VERSION=${OSMO_VERSION#v}
 
 # Stage 2: Final stage
 FROM alpine:3

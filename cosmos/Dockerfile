@@ -25,7 +25,7 @@ RUN git clone --depth 1 https://github.com/microsoft/mimalloc; \
 ADD https://github.com/cosmos/gaia/archive/refs/tags/${GAIA_VERSION}.tar.gz ${GAIA_VERSION}.tar.gz
 RUN tar -xzf ${GAIA_VERSION}.tar.gz && \
   cd gaia-${GAIA_VERSION#v} && \
-  LEDGER_ENABLED=true BUILD_TAGS=muslc LDFLAGS="-linkmode=external -extldflags \"-L/code/mimalloc/build -lmimalloc -Wl,-z,muldefs -static\"" make install
+  LEDGER_ENABLED=true BUILD_TAGS=muslc LDFLAGS="-linkmode=external -extldflags \"-L/code/mimalloc/build -lmimalloc -Wl,-z,muldefs -static\"" make install VERSION=${GAIA_VERSION#v}
 
 # Stage 2: Final stage
 FROM alpine:3

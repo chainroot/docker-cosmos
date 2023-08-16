@@ -47,7 +47,7 @@ RUN MEV_TENDERMINT_VERSION=$(curl -s ${SKIP_REPO}/mev-tendermint_version.txt) &&
     github.com/tendermint/tendermint=github.com/skip-mev/mev-tendermint@${MEV_TENDERMINT_VERSION} && \
     go mod tidy
 
-RUN LEDGER_ENABLED=true BUILD_TAGS=muslc LDFLAGS="-linkmode=external -extldflags \"-L/code/mimalloc/build -lmimalloc -Wl,-z,muldefs -static\"" make build
+RUN LEDGER_ENABLED=true BUILD_TAGS=muslc LDFLAGS="-linkmode=external -extldflags \"-L/code/mimalloc/build -lmimalloc -Wl,-z,muldefs -static\"" make build VERSION=${TERRA_VERSION#v}
 
 FROM alpine:3
 
