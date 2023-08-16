@@ -1,7 +1,7 @@
 FROM golang:1.19-alpine AS go-builder
 ARG arch=x86_64
 
-ENV STRIDE_VERSION=v12.1.0
+ENV STRIDE_VERSION=v13.1.0
 ENV PACKAGES git cmake ca-certificates build-base curl make libc-dev bash gcc linux-headers eudev-dev python3 libusb-dev
 
 RUN set -eux; \
@@ -25,7 +25,7 @@ RUN git clone --depth 1 https://github.com/microsoft/mimalloc; \
 ADD https://github.com/Stride-Labs/stride/archive/refs/tags/${STRIDE_VERSION}.tar.gz ${STRIDE_VERSION}.tar.gz
 RUN tar -xzf ${STRIDE_VERSION}.tar.gz && \
     cd stride-${STRIDE_VERSION#v} && \
-    LEDGER_ENABLED=false BUILD_TAGS="muslc badgerdb" LDFLAGS="-linkmode=external -extldflags \"-L/code/mimalloc/build -lmimalloc -Wl,-z,muldefs -static\"" make install
+    LEDGER_ENABLED=false BUILD_TAGS="muslc badgerdb" LDFLAGS="-linkmode=external -extldflags \"-L/code/mimalloc/build -lmimalloc -Wl,-z,muldefs -static\"" make install VERSION=${STRIDE_VERSION#v}
 
 # Stage 2: Create minimal runtime image
 FROM alpine:3

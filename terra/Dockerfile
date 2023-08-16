@@ -1,8 +1,8 @@
 FROM golang:1.20-alpine AS go-builder
 ARG arch=x86_64
 
-ENV TERRA_VERSION=v2.3.4
-ENV SKIP_VERSION=v2.3.4
+ENV TERRA_VERSION=v2.4.1
+ENV SKIP_VERSION=v2.4.1
 ENV CHAIN_ID=phoenix-1
 ENV LIBWASMVM_VERSION=v1.1.1
 
@@ -47,7 +47,7 @@ RUN MEV_TENDERMINT_VERSION=$(curl -s ${SKIP_REPO}/mev-tendermint_version.txt) &&
     github.com/tendermint/tendermint=github.com/skip-mev/mev-tendermint@${MEV_TENDERMINT_VERSION} && \
     go mod tidy
 
-RUN LEDGER_ENABLED=true BUILD_TAGS=muslc LDFLAGS="-linkmode=external -extldflags \"-L/code/mimalloc/build -lmimalloc -Wl,-z,muldefs -static\"" make build
+RUN LEDGER_ENABLED=true BUILD_TAGS=muslc LDFLAGS="-linkmode=external -extldflags \"-L/code/mimalloc/build -lmimalloc -Wl,-z,muldefs -static\"" make build VERSION=${TERRA_VERSION#v}
 
 FROM alpine:3
 
