@@ -58,11 +58,11 @@ genesis_file = "$CONFIG__GENESIS_PATH"
 priv_validator_key_file = "$CONFIG__PRIV_KEY_PATH"
 
 # Path to the JSON file containing the last sign state of a validator
-priv_validator_state_file = "$CONFIG__STATE_PATH"
+priv_validator_state_file = "$CONFIG__PRIV_STATE_PATH"
 
 # TCP or UNIX socket address for Tendermint to listen on for
 # connections from an external PrivValidator process
-priv_validator_laddr = "$CONFIG__LADDR"
+priv_validator_laddr = "$CONFIG__PRIV_LADDR"
 
 # Path to the JSON file containing the private key to use for node authentication in the p2p protocol
 node_key_file = "$CONFIG__NODE_KEY_PATH"
@@ -450,7 +450,7 @@ psql-conn = "$CONFIG__INDEXER_PSQL_CONN"
 prometheus = $CONFIG__PROMETHEUS_ENABLED
 
 # Address to listen for Prometheus collector(s) connections
-prometheus_listen_addr = "$CONFIG_PROMETHEUS_LADDR"
+prometheus_listen_addr = "$CONFIG__PROMETHEUS_LADDR"
 
 # Maximum number of simultaneous connections.
 # If you want to accept a larger number than the default, make sure
