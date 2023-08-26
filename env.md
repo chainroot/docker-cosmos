@@ -79,8 +79,8 @@ Here are the environment variables for the config configuration.
 | CONFIG__LOG_FORMAT | "plain" | Log format |
 | CONFIG__GENESIS_PATH | "config/genesis.json" | Genesis file path |
 | CONFIG__PRIV_KEY_PATH | "config/priv_validator_key.json" | Private key file path |
-| CONFIG__STATE_PATH | "data/priv_validator_state.json" | State file path |
-| CONFIG__LADDR | "" | Local address |
+| CONFIG__PRIV_STATE_PATH | "data/priv_validator_state.json" | State file path |
+| CONFIG__PRIV_LADDR | "" | Local address |
 | CONFIG__NODE_KEY_PATH | "config/node_key.json" | Node key file path |
 | CONFIG__ABCI_CONNECT_METHOD | "socket" | ABCI connect method |
 | CONFIG__FILTER_PEERS | false | Filter peers |
@@ -164,7 +164,7 @@ Here are the environment variables for the config configuration.
 | CONFIG__INDEXER_TYPE | "null" | Indexer type |
 | CONFIG__INDEXER_PSQL_CONN | "" | PostgreSQL connection for indexer |
 | CONFIG__PROMETHEUS_ENABLED | false | Prometheus enabled |
-| CONFIG_PROMETHEUS_LADDR | ":26660" | Prometheus local address |
+| CONFIG__PROMETHEUS_LADDR | ":26660" | Prometheus local address |
 | CONFIG__PROMETHEUS_MAX_CONN | 3 | Maximum connections for Prometheus |
 | CONFIG__PROMETHEUS_NAMESPACE | "tendermint" | Prometheus namespace |
 
