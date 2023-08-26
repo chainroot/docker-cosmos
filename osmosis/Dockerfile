@@ -2,7 +2,7 @@
 FROM golang:1.20-alpine AS go-builder
 ARG arch=x86_64
 
-ENV OSMO_VERSION=v16.1.1
+ENV OSMO_VERSION=v18.0.0
 ENV LIBWASMVM_VERSION=v1.2.3
 ENV PACKAGES git cmake ca-certificates build-base curl make libc-dev bash gcc linux-headers eudev-dev python3 libusb-dev coreutils
 
