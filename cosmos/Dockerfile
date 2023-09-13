@@ -2,7 +2,7 @@
 FROM golang:1.20-alpine AS go-builder
 ARG arch=x86_64
 
-ENV GAIA_VERSION=v11.0.0
+ENV GAIA_VERSION=v12.0.0
 ENV PACKAGES git cmake ca-certificates build-base curl make libc-dev bash gcc linux-headers eudev-dev python3 libusb-dev
 
 RUN set -eux; \
