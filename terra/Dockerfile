@@ -1,14 +1,12 @@
 FROM golang:1.20-alpine AS go-builder
 ARG arch=x86_64
 
-ENV TERRA_VERSION=v2.4.1
-ENV SKIP_VERSION=v2.4.1
+ENV TERRA_VERSION=v2.5.2
 ENV CHAIN_ID=phoenix-1
-ENV LIBWASMVM_VERSION=v1.1.1
+ENV LIBWASMVM_VERSION=v1.4.1
 
 ENV MIMALLOC_RESERVE_HUGE_OS_PAGES=1
 ENV PACKAGES git cmake ca-certificates build-base curl make libc-dev bash gcc linux-headers eudev-dev python3 libusb-dev coreutils
-ENV SKIP_REPO=https://raw.githubusercontent.com/skip-mev/config/main/${CHAIN_ID}/${SKIP_VERSION}
 
 RUN set -eux; \
     apk add --no-cache $PACKAGES
@@ -39,13 +37,6 @@ RUN tar xzf ${TERRA_VERSION}.tar.gz && \
     mv core-${TERRA_VERSION#v} terra
 
 WORKDIR /code/terra
-
-# Replace tendermint with skip-mev-tendermint
-# TODO: add arg for skip-mev-tendermint enable/disable
-RUN MEV_TENDERMINT_VERSION=$(curl -s ${SKIP_REPO}/mev-tendermint_version.txt) && \ 
-    go mod edit -replace \
-    github.com/tendermint/tendermint=github.com/skip-mev/mev-tendermint@${MEV_TENDERMINT_VERSION} && \
-    go mod tidy
 
 RUN VERSION=${TERRA_VERSION#v} LEDGER_ENABLED=true BUILD_TAGS=muslc LDFLAGS="-linkmode=external -extldflags \"-L/code/mimalloc/build -lmimalloc -Wl,-z,muldefs -static\"" make build 
 
