@@ -17,7 +17,15 @@ else
     DOCKER_TAGS := -t $(REPO)/$(DIR):$(BRANCH_NAME)
 endif
 
-DOCKER_CMD := docker buildx build $(DOCKER_TAGS) .
+GO_VERSION := $(shell cat ./$(DIR)/VERSION | grep go | awk '{print $2}')
+BIN_VERSION := $(shell cat ./$(DIR)/VERSION | grep binary | awk '{print $2}')
+WASMVM_VERSION := $(shell cat ./$(DIR)/VERSION | grep wasm | awk '{print $2}')
+ifeq ($(WASM_VERSION),)
+	BUILD_ARG := --build-arg GO_VERSION=$(GO_VERSION) BIN_VERSION=$(BIN_VERSION)
+else
+	BUILD_ARG := --build-arg GO_VERSION=$(GO_VERSION) BIN_VERSION=$(BIN_VERSION) WASM_VERSION=$(WASM_VERSION)
+endif
+DOCKER_CMD := docker buildx build $(DOCKER_TAGS) $(BUILD_ARG) . 
 
 .PHONY: lint
 lint:
@@ -77,3 +85,7 @@ help:
 
 .PHONY: all
 all: buildall
+
+.PHONY: checkversion
+checkversion:
+	.github/workflows/update_version.sh $(REPO) $(DIRS)
