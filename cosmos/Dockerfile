@@ -1,11 +1,11 @@
 # Stage 1: Build stage
-ARG GO_VERSION
-FROM golang:$GO_VERSION-alpine AS go-builder
+FROM golang:1.20-alpine AS go-builder
 ARG arch=x86_64
+
 ARG BIN_VERSION
+ARG WASM_VERSION
 
-
-ENV PACKAGES git cmake ca-certificates build-base curl make libc-dev bash gcc linux-headers eudev-dev python3 libusb-dev
+ENV PACKAGES git cmake ca-certificates build-base curl make libc-dev bash gcc linux-headers eudev-dev python3 libusb-dev coreutils
 
 RUN set -eux; \
     apk add --no-cache $PACKAGES
@@ -48,6 +48,7 @@ WORKDIR /gaia
 
 COPY --from=go-builder /go/bin/gaiad /usr/local/bin/gaiad
 
+# rest, grpc, p2p, rpc
 EXPOSE 1317 9090 26656 26657
 
 CMD ["sh", "-c", "/gaia/entrypoint.sh"]
