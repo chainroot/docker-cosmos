@@ -6,6 +6,9 @@ CONFIG_PATH=$HOME/.gaia/config
 
 mkdir -p $CONFIG_PATH
 
+# Copy config files
+cp $HOME/config-sample/* $CONFIG_PATH/
+
 # first time setup
 if [ ! -f $CONFIG_PATH/genesis.json ]; then 
   if [ "$MAINNET_CHAIN_ID" = "cosmoshub-4" ]; then

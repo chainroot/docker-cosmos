@@ -1,11 +1,11 @@
 # Stage 1: Build stage
-FROM golang:1.20-alpine AS go-builder
+ARG GO_VERSION
+FROM golang:$GO_VERSION-alpine AS go-builder
 ARG arch=x86_64
 
 ARG BIN_VERSION
 ARG WASM_VERSION
-
-ENV PACKAGES git cmake ca-certificates build-base curl make libc-dev bash gcc linux-headers eudev-dev python3 libusb-dev coreutils
+ENV PACKAGES git cmake ca-certificates build-base curl make libc-dev bash gcc linux-headers eudev-dev python3 libusb-dev
 
 RUN set -eux; \
     apk add --no-cache $PACKAGES

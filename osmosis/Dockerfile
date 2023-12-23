@@ -5,8 +5,7 @@ ARG arch=x86_64
 
 ARG BIN_VERSION
 ARG WASM_VERSION
-
-ENV PACKAGES git cmake ca-certificates build-base curl make libc-dev bash gcc linux-headers eudev-dev python3 libusb-dev coreutils
+ENV PACKAGES git cmake ca-certificates build-base curl make libc-dev bash gcc linux-headers eudev-dev python3 libusb-dev
 
 RUN set -eux; \
     apk add --no-cache $PACKAGES
@@ -27,8 +26,8 @@ RUN git clone --depth 1 https://github.com/microsoft/mimalloc; \
 # Download Osmosis and extract tgz
 ADD https://github.com/osmosis-labs/osmosis/archive/refs/tags/${BIN_VERSION}.tar.gz ${BIN_VERSION}.tar.gz
 RUN tar -xzf ${BIN_VERSION}.tar.gz && \
-    cd osmosis-${BIN_VERSION#v} && \
-    LEDGER_ENABLED=true BUILD_TAGS=muslc LDFLAGS="-linkmode=external -extldflags \"-L/code/mimalloc/build -lmimalloc -Wl,-z,muldefs -static\"" make install VERSION=${BIN_VERSION#v}
+  cd osmosis-${BIN_VERSION#v} && \
+  LEDGER_ENABLED=true BUILD_TAGS=muslc LDFLAGS="-linkmode=external -extldflags \"-L/code/mimalloc/build -lmimalloc -Wl,-z,muldefs -static\"" make install VERSION=${BIN_VERSION#v}
 
 # Stage 2: Final stage
 FROM alpine:3

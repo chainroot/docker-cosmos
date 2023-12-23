@@ -1,38 +1,30 @@
 #!/bin/sh -e
 
-CONFIG_PATH=$HOME/.osmosisd/config
+MAINNET_CHAIN_ID=$(grep 'mainnet_chain_id' ./info | cut -d '=' -f2)
+TESTNET_CHAIN_ID=$(grep 'testnet_chain_id' ./info | cut -d '=' -f2)
+CONFIG_PATH=$HOME/.osmosis/config
 
-# Create necessary directories
-mkdir -p $CONFIG_PATH 
+mkdir -p $CONFIG_PATH
 
-# Replace environment variables in config files
-envsubst < $HOME/config-sample/app.toml > $CONFIG_PATH/app.toml
-envsubst < $HOME/config-sample/client.toml > $CONFIG_PATH/client.toml
-envsubst < $HOME/config-sample/config.toml > $CONFIG_PATH/config.toml
+# Copy config files
+cp $HOME/config-sample/* $CONFIG_PATH/
 
 # first time setup
-if [ ! -f $CONFIG_PATH/genesis.json ]; then
-  # mainnet
-  if [ $CLIENT__CHAIN_ID = "osmosis-1" ]; then
-    # download snapshot
-    wget -O - https://snapshots.polkachu.com/snapshots/osmosis/osmosis_$SNAPSHOT_BLOCK_HEIGHT.tar.lz4 | lz4 -c -d - | tar -x -C $HOME/.osmosisd
-    # download addrbook
-    wget -O $HOME/.osmosisd/config/addrbook.json https://snapshots.polkachu.com/addrbook/osmosis/addrbook.json
-    # download genesis
-    wget -O $HOME/.osmosisd/config/genesis.json https://github.com/osmosis-labs/networks/raw/main/osmosis-1/genesis.json
-
-  # testnet TODO: automate with toolchain
-  elif [ $CLIENT__CHAIN_ID = "osmo-test-4" ]; then
-    URL=$(wget -O - https://dl2.quicksync.io/json/osmosis.json | jq -r '.[] |select(.file=="osmotestnet-4-pruned")|select (.mirror=="Netherlands")|.url')
-    wget -O - $URL | lz4 -d | tar -x -C $HOME/.osmosisd
-
-    SEEDS="0f9a9c694c46bd28ad9ad6126e923993fc6c56b1@137.184.181.105:26656"
-    PPEERS="4ab030b7fd75ed895c48bcc899b99c17a396736b@137.184.190.127:26656,3dbffa30baab16cc8597df02945dcee0aa0a4581@143.198.139.33:26656"
-    sed -i.bak -e "s/^seeds *=.*/seeds = \"$SEEDS\"/" $HOME/.osmosisd/config/config.toml
-    sed -i.bak -e "s/^persistent_peers *=.*/persistent_peers = \"$PPEERS\"/" $HOME/.osmosisd/config/config.toml
-    cd $HOME/.osmosisd/config
-    wget https://github.com/osmosis-labs/networks/raw/main/osmo-test-4/genesis.tar.bz2
-    tar -xjf genesis.tar.bz2 && rm genesis.tar.bz2
+if [ ! -f $CONFIG_PATH/genesis.json ]; then 
+  if [ "$MAINNET_CHAIN_ID" = "osmosis-1" ]; then
+    # Mainnet setup
+    wget -O $CONFIG_PATH/addrbook.json https://example.com/addrbook.osmosis.json
+    wget -O snapshot.tar.lz4 https://example.com/snapshots/osmosis/osmosis_$SNAPSHOT_BLOCK_HEIGHT.tar.lz4
+    lz4 -c -d snapshot.tar.lz4  | tar -x -C $HOME/.osmosis && rm snapshot.tar.lz4
+    wget https://example.com/genesis/osmosis-1.json.gz
+    gzip -d osmosis-1.json.gz
+    mv osmosis-1.json $CONFIG_PATH/genesis.json
+  elif [ "$TESTNET_CHAIN_ID" = "osmo-test-4" ]; then
+    # Testnet setup
+    wget https://example.com/testnets/genesis.json.gz
+    gzip -d genesis.json.gz
+    mv genesis.json $CONFIG_PATH/genesis.json
+    # TODO: Add addrbook and snapshot for osmo-test-4
   fi
 fi
 

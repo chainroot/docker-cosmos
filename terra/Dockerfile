@@ -4,9 +4,7 @@ FROM golang:$GO_VERSION-alpine AS go-builder
 ARG arch=x86_64
 
 ARG BIN_VERSION
-ARG WASM_VERSION
-
-ENV PACKAGES git cmake ca-certificates build-base curl make libc-dev bash gcc linux-headers eudev-dev python3 libusb-dev coreutils
+ENV PACKAGES git cmake ca-certificates build-base curl make libc-dev bash gcc linux-headers eudev-dev python3 libusb-dev
 
 RUN set -eux; \
     apk add --no-cache $PACKAGES
@@ -27,24 +25,24 @@ RUN git clone --depth 1 https://github.com/microsoft/mimalloc; \
 # Download Terra and extract tgz
 ADD https://github.com/terra-money/core/archive/refs/tags/${BIN_VERSION}.tar.gz ${BIN_VERSION}.tar.gz
 RUN tar -xzf ${BIN_VERSION}.tar.gz && \
-    cd terra-${BIN_VERSION#v} && \
-    LEDGER_ENABLED=true BUILD_TAGS=muslc LDFLAGS="-linkmode=external -extldflags \"-L/code/mimalloc/build -lmimalloc -Wl,-z,muldefs -static\"" make install VERSION=${BIN_VERSION#v}
+  cd core-${BIN_VERSION#v} && \
+  LEDGER_ENABLED=true BUILD_TAGS=muslc LDFLAGS="-linkmode=external -extldflags \"-L/code/mimalloc/build -lmimalloc -Wl,-z,muldefs -static\"" make install VERSION=${BIN_VERSION#v}
 
 # Stage 2: Final stage
 FROM alpine:3
 
 RUN apk add --no-cache lz4 tar gettext && \
-    addgroup -g 1211 terra && \
-    adduser -G terra -u 1210 -D -h /terra terra && \
+    addgroup -g 1211 terrad && \
+    adduser -G terrad -u 1210 -D -h /terra terrad && \
     mkdir -p /terra/.terra/config /terra/.terra/data && \
-    chown terra:terra -R /terra
+    chown terrad:terrad -R /terra
 
 COPY ./config /terra/config-sample
 COPY ./entrypoint.sh /terra
-RUN chown terra:terra /terra/entrypoint.sh && \
+RUN chown terrad:terrad /terra/entrypoint.sh && \
     chmod +x /terra/entrypoint.sh
 
-USER terra
+USER terrad
 WORKDIR /terra
 
 COPY --from=go-builder /go/bin/terrad /usr/local/bin/terrad

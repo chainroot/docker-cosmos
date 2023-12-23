@@ -1,28 +1,30 @@
-#!/bin/sh
+#!/bin/sh -e
 
+MAINNET_CHAIN_ID=$(grep 'mainnet_chain_id' ./info | cut -d '=' -f2)
+TESTNET_CHAIN_ID=$(grep 'testnet_chain_id' ./info | cut -d '=' -f2)
 CONFIG_PATH=$HOME/.stride/config
 
-envsubst < $HOME/config-sample/app.toml > $CONFIG_PATH/app.toml
-envsubst < $HOME/config-sample/client.toml > $CONFIG_PATH/client.toml
-envsubst < $HOME/config-sample/config.toml > $CONFIG_PATH/config.toml
+mkdir -p $CONFIG_PATH
 
-if [ ! -f $CONFIG_PATH/genesis.json ]; then
-  # mainnet
-  if [ $CLIENT__CHAIN_ID = "stride-1" ]; then
-    wget -O $CONFIG_PATH/genesis.json https://raw.githubusercontent.com/Stride-Labs/mainnet/main/mainnet/genesis.json
-    wget -O $CONFIG_PATH/addrbook.json https://snapshots.polkachu.com/addrbook/stride/addrbook.json
-    #Download snapshot
-    wget -O snapshot.tar.lz4 https://snapshots.polkachu.com/snapshots/stride/stride_$SNAPSHOT_BLOCK_HEIGHT.tar.lz4
-    #Extract data
-    lz4 -c -d snapshot.tar.lz4  | tar -x -C $HOME/.stride
+# Copy config files
+cp $HOME/config-sample/* $CONFIG_PATH/
 
-  elif [$CLIENT__CHAIN_ID = "stride-testnet-1" ]; then
-    wget -O $CONFIG_PATH/genesis.json https://snapshots.polkachu.com/testnet-genesis/stride/genesis.json 
-    wget -O $CONFIG_PATH/addrbook.json https://snapshots.polkachu.com/testnet-addrbook/stride/addrbook.json
-    #Download snapshot
-    wget -O snapshot.tar.lz4 https://snapshots.polkachu.com/testnet-snapshots/stride/stride_$SNAPSHOT_BLOCK_HEIGHT.tar.lz4
-    #Extract data
-    lz4 -c -d snapshot.tar.lz4  | tar -x -C $HOME/.stride
+# first time setup
+if [ ! -f $CONFIG_PATH/genesis.json ]; then 
+  if [ "$MAINNET_CHAIN_ID" = "stride-1" ]; then
+    # Mainnet setup
+    wget -O $CONFIG_PATH/addrbook.json https://example.com/addrbook.stride.json
+    wget -O snapshot.tar.lz4 https://example.com/snapshots/stride/stride_$SNAPSHOT_BLOCK_HEIGHT.tar.lz4
+    lz4 -c -d snapshot.tar.lz4  | tar -x -C $HOME/.stride && rm snapshot.tar.lz4
+    wget https://example.com/genesis/stride-1.json.gz
+    gzip -d stride-1.json.gz
+    mv stride-1.json $CONFIG_PATH/genesis.json
+  elif [ "$TESTNET_CHAIN_ID" = "stride-test-4" ]; then
+    # Testnet setup
+    wget https://example.com/testnets/genesis.json.gz
+    gzip -d genesis.json.gz
+    mv genesis.json $CONFIG_PATH/genesis.json
+    # TODO: Add addrbook and snapshot for stride-test-4
   fi
 fi
 
