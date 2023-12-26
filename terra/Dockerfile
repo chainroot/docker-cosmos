@@ -1,11 +1,13 @@
 ARG GO_VERSION
 FROM golang:1.20-alpine AS go-builder
 ARG arch=x86_64
+ARG WASM_VERSION
+ARG BIN_VERSION
 ENV TERRA_VERSION=v2.5.2
 ENV CHAIN_ID=phoenix-1
 ENV LIBWASMVM_VERSION=v1.4.1
 ENV MIMALLOC_RESERVE_HUGE_OS_PAGES=1
-ENV PACKAGES git cmake ca-certificates build-base curl make libc-dev bash gcc linux-headers eudev-dev python3 libusb-dev
+ENV PACKAGES git cmake ca-certificates build-base curl make libc-dev bash gcc linux-headers eudev-dev python3 libusb-dev coreutils
 
 RUN set -eux; \
     apk add --no-cache $PACKAGES
