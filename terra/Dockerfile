@@ -42,7 +42,6 @@ FROM alpine:3
 RUN apk add --no-cache lz4 tar gettext && \
     addgroup -g 1211 terrad و \
     adduser -G terrad -u 1210 -D -h /terra terrad و \
-    mkdir -p /terra/.terra/data و \
     chown terrad:terrad -R /terra
 
 COPY ./entrypoint.sh /terra

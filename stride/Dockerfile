@@ -35,7 +35,6 @@ FROM alpine:3
 RUN apk add --no-cache lz4 tar gettext و \
     addgroup -g 1211 stride و \
     adduser -G stride -u 1210 -D -h /stride stride و \
-    mkdir -p /stride/.stride/data و \
     chown stride:stride -R /stride
 
 COPY ./entrypoint.sh /stride
