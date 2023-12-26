@@ -1,5 +1,5 @@
 ARG GO_VERSION
-FROM golang:1.19-alpine AS go-builder
+FROM golang:$GO_VERSION-alpine AS go-builder
 ARG arch=x86_64
 ARG BIN_VERSION
 ENV PACKAGES git cmake ca-certificates build-base curl make libc-dev bash gcc linux-headers eudev-dev python3 libusb-dev coreutils

@@ -1,6 +1,6 @@
 # Stage 1: Build stage
 ARG GO_VERSION
-FROM golang:1.20-alpine AS go-builder
+FROM golang:$GO_VERSION-alpine AS go-builder
 ARG arch=x86_64
 ARG WASM_VERSION
 ARG BIN_VERSION
