@@ -38,7 +38,6 @@ RUN apk add --no-cache lz4 tar gettext && \
     mkdir -p /stride/.stride/config /stride/.stride/data && \
     chown stride:stride -R /stride
 
-COPY ./config /stride/config-sample
 COPY ./entrypoint.sh /stride
 RUN chown stride:stride /stride/entrypoint.sh && \
     chmod +x /stride/entrypoint.sh
