@@ -2,7 +2,7 @@
 ARG GO_VERSION
 FROM golang:$GO_VERSION-alpine AS go-builder
 ARG arch=x86_64
-
+ARG WASM_VERSION
 ARG BIN_VERSION
 ENV PACKAGES git cmake ca-certificates build-base curl make libc-dev bash gcc linux-headers eudev-dev python3 libusb-dev
 
@@ -34,10 +34,8 @@ FROM alpine:3
 RUN apk add --no-cache lz4 tar gettext && \
     addgroup -g 1211 gaia && \
     adduser -G gaia -u 1210 -D -h /gaia gaia && \
-    mkdir -p /gaia/.gaia/config /gaia/.gaia/data && \
     chown gaia:gaia -R /gaia
 
-COPY ./config /gaia/config-sample
 COPY ./entrypoint.sh /gaia
 RUN chown gaia:gaia /gaia/entrypoint.sh && \
     chmod +x /gaia/entrypoint.sh
@@ -47,7 +45,7 @@ WORKDIR /gaia
 
 COPY --from=go-builder /go/bin/gaiad /usr/local/bin/gaiad
 
-# rest, grpc, p2p, rpc
+    #  rest, grpc, p2p, rpc
 EXPOSE 1317 9090 26656 26657
 
 CMD ["sh", "-c", "/gaia/entrypoint.sh"]

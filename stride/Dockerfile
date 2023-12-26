@@ -1,7 +1,8 @@
+ARG GO_VERSION
 FROM golang:1.19-alpine AS go-builder
 ARG arch=x86_64
-
-ENV STRIDE_VERSION=v15.0.0
+ARG BIN_VERSION
+ARG WASM_VERSION
 ENV PACKAGES git cmake ca-certificates build-base curl make libc-dev bash gcc linux-headers eudev-dev python3 libusb-dev
 
 RUN set -eux; \
@@ -36,11 +37,9 @@ ENV DAEMON_HOME="/stride/.stride"
 RUN apk add --no-cache lz4 tar gettext && \
     addgroup -g 1211 stride && \
     adduser -G stride -u 1210 -D -h /stride stride && \
-    mkdir -p /stride/.stride/config /stride/.stride/data && \
     chown stride:stride -R /stride
 
 
-COPY ./config /stride/config-sample
 COPY ./entrypoint.sh /stride
 
 RUN chown stride:stride /stride/entrypoint.sh && \
@@ -51,7 +50,7 @@ WORKDIR /stride
 
 COPY --from=go-builder /go/bin/strided /usr/local/bin/strided
 
-# rest, grpc, p2p, rpc
+    #  rest, grpc, p2p, rpc
 EXPOSE 1317 9090 26656 26657
 
 CMD ["sh", "-c", "/stride/entrypoint.sh"] 

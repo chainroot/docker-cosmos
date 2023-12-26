@@ -1,10 +1,10 @@
 # Stage 1: Build stage
+ARG GO_VERSION
 FROM golang:1.20-alpine AS go-builder
 ARG arch=x86_64
-
-ENV OSMO_VERSION=v20.1.2
-ENV LIBWASMVM_VERSION=v1.3.0
-ENV PACKAGES git cmake ca-certificates build-base curl make libc-dev bash gcc linux-headers eudev-dev python3 libusb-dev coreutils
+ARG BIN_VERSION
+ARG WASM_VERSION
+ENV PACKAGES git cmake ca-certificates build-base curl make libc-dev bash gcc linux-headers eudev-dev python3 libusb-dev
 
 RUN set -eux; \
     apk add --no-cache $PACKAGES
@@ -43,9 +43,7 @@ RUN apk add --no-cache lz4 tar gettext && \
     adduser -G osmosis -u 1210 -D -h /osmosis osmosis && \
     chown osmosis:osmosis -R /osmosis
 
-COPY ./config /osmosis/config-sample
 COPY ./entrypoint.sh /osmosis
-
 RUN chown osmosis:osmosis /osmosis/entrypoint.sh && \
     chmod +x /osmosis/entrypoint.sh
 
@@ -54,7 +52,7 @@ WORKDIR /osmosis
 
 COPY --from=go-builder /go/bin/osmosisd /usr/local/bin/osmosisd
 
-# rest, grpc, p2p, rpc
+    #  rest, grpc, p2p, rpc
 EXPOSE 1317 9090 26656 26657
 
 CMD ["sh", "-c", "/osmosis/entrypoint.sh"]
