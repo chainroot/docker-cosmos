@@ -1,3 +1,2 @@
-go 13.1.0
-binary 13.1
-wasm 13
+go 1.19
+binary 15.0.0
