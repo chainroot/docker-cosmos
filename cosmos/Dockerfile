@@ -4,7 +4,6 @@ FROM golang:$GO_VERSION-alpine AS go-builder
 ARG arch=x86_64
 
 ARG BIN_VERSION
-ARG WASM_VERSION
 ENV PACKAGES git cmake ca-certificates build-base curl make libc-dev bash gcc linux-headers eudev-dev python3 libusb-dev
 
 RUN set -eux; \
