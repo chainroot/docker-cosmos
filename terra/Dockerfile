@@ -4,6 +4,7 @@ FROM golang:$GO_VERSION-alpine AS go-builder
 ARG arch=x86_64
 
 ARG BIN_VERSION
+ENV LIBWASMVM_VERSION=v1.4.1
 ENV PACKAGES git cmake ca-certificates build-base curl make libc-dev bash gcc linux-headers eudev-dev python3 libusb-dev
 
 RUN set -eux; \
@@ -22,6 +23,13 @@ RUN git clone --depth 1 https://github.com/microsoft/mimalloc; \
     cd /code; \
     rm -rf mimalloc
 
+# Install libraries for WASM and verify checksums
+ADD https://github.com/CosmWasm/wasmvm/releases/download/${LIBWASMVM_VERSION}/libwasmvm_muslc.aarch64.a libwasmvm_muslc.aarch64.a
+ADD https://github.com/CosmWasm/wasmvm/releases/download/${LIBWASMVM_VERSION}/libwasmvm_muslc.x86_64.a libwasmvm_muslc.x86_64.a
+ADD https://github.com/CosmWasm/wasmvm/releases/download/${LIBWASMVM_VERSION}/checksums.txt checksums.txt
+RUN sha256sum -c --ignore-missing --status checksums.txt && \
+    cp libwasmvm_muslc.`uname -m`.a /lib/libwasmvm_muslc.a
+
 # Download Terra and extract tgz
 ADD https://github.com/terra-money/core/archive/refs/tags/${BIN_VERSION}.tar.gz ${BIN_VERSION}.tar.gz
 RUN tar -xzf ${BIN_VERSION}.tar.gz && \
@@ -32,14 +40,13 @@ RUN tar -xzf ${BIN_VERSION}.tar.gz && \
 FROM alpine:3
 
 RUN apk add --no-cache lz4 tar gettext && \
-    addgroup -g 1211 terrad && \
-    adduser -G terrad -u 1210 -D -h /terra terrad && \
-    mkdir -p /terra/.terra/config /terra/.terra/data && \
+    addgroup -g 1211 terrad و \
+    adduser -G terrad -u 1210 -D -h /terra terrad و \
+    mkdir -p /terra/.terra/data و \
     chown terrad:terrad -R /terra
 
-COPY ./config /terra/config-sample
 COPY ./entrypoint.sh /terra
-RUN chown terrad:terrad /terra/entrypoint.sh && \
+RUN chown terrad:terrad /terra/entrypoint.sh و \
     chmod +x /terra/entrypoint.sh
 
 USER terrad

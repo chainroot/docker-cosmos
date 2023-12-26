@@ -34,10 +34,9 @@ FROM alpine:3
 RUN apk add --no-cache lz4 tar gettext && \
     addgroup -g 1211 gaia && \
     adduser -G gaia -u 1210 -D -h /gaia gaia && \
-    mkdir -p /gaia/.gaia/config /gaia/.gaia/data && \
+    mkdir -p /gaia/.gaia/data && \
     chown gaia:gaia -R /gaia
 
-COPY ./config /gaia/config-sample
 COPY ./entrypoint.sh /gaia
 RUN chown gaia:gaia /gaia/entrypoint.sh && \
     chmod +x /gaia/entrypoint.sh

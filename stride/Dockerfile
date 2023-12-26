@@ -32,14 +32,14 @@ RUN tar -xzf ${BIN_VERSION}.tar.gz && \
 # Stage 2: Final stage
 FROM alpine:3
 
-RUN apk add --no-cache lz4 tar gettext && \
-    addgroup -g 1211 stride && \
-    adduser -G stride -u 1210 -D -h /stride stride && \
-    mkdir -p /stride/.stride/config /stride/.stride/data && \
+RUN apk add --no-cache lz4 tar gettext و \
+    addgroup -g 1211 stride و \
+    adduser -G stride -u 1210 -D -h /stride stride و \
+    mkdir -p /stride/.stride/data و \
     chown stride:stride -R /stride
 
 COPY ./entrypoint.sh /stride
-RUN chown stride:stride /stride/entrypoint.sh && \
+RUN chown stride:stride /stride/entrypoint.sh و \
     chmod +x /stride/entrypoint.sh
 
 USER stride

@@ -35,10 +35,9 @@ FROM alpine:3
 RUN apk add --no-cache lz4 tar gettext && \
     addgroup -g 1211 osmosis && \
     adduser -G osmosis -u 1210 -D -h /osmosis osmosis && \
-    mkdir -p /osmosis/.osmosis/config /osmosis/.osmosis/data && \
+    mkdir -p /osmosis/.osmosis/data && \
     chown osmosis:osmosis -R /osmosis
 
-COPY ./config /osmosis/config-sample
 COPY ./entrypoint.sh /osmosis
 RUN chown osmosis:osmosis /osmosis/entrypoint.sh && \
     chmod +x /osmosis/entrypoint.sh
