@@ -40,11 +40,11 @@ lint:
 
 build:
 	@$(info ****> Building $(DIR) -- $(REPO)/$(DIR):$(BRANCH_NAME))
-	@pushd $(DIR) && $(DOCKER_CMD) && popd
+	@cd $(DIR) && $(DOCKER_CMD) && cd -
 
 push:
 	@$(info ****> Pushing $(DIR) -- $(REPO)/$(DIR):$(BRANCH_NAME))
-	@pushd $(DIR) && $(DOCKER_CMD) --push && popd
+	@cd $(DIR) && $(DOCKER_CMD) --push && cd -
 
 buildall: $(addprefix build-, $(DIRS))
 
