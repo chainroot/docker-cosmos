@@ -30,7 +30,7 @@ RUN sha256sum -c --ignore-missing --status checksums.txt && \
     cp libwasmvm_muslc.`uname -m`.a /lib/libwasmvm_muslc.a
 
 # Download Osmo and extract tgz 
-ADD https://github.com/osmosis-labs/osmosis/archive/refs/tags/${OSMO_VERSION}.tar.gz ${OSMO_VERSION}.tar.gz
+ADD https://github.com/osmosis-labs/osmosis/archive/refs/tags/${BIN_VERSION}.tar.gz ${BIN_VERSION}.tar.gz
 RUN tar xzf ${OSMO_VERSION}.tar.gz && \
   cd osmosis-${OSMO_VERSION#v} && \
   LEDGER_ENABLED=true BUILD_TAGS=muslc LDFLAGS="-linkmode=external -extldflags \"-L/code/mimalloc/build -lmimalloc -Wl,-z,muldefs -static\"" make install VERSION=${OSMO_VERSION#v}
