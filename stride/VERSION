@@ -1,2 +1,2 @@
 go 1.19
-binary 16.0.0
+binary v16.0.0
