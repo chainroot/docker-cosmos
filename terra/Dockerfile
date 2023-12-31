@@ -26,14 +26,14 @@ RUN git clone --depth 1 https://github.com/microsoft/mimalloc; \
     rm -rf mimalloc
 
 # Install libraries and verify checksums
-ADD https://github.com/CosmWasm/wasmvm/releases/download/${LIBWASMVM_VERSION}/libwasmvm_muslc.aarch64.a libwasmvm_muslc.aarch64.a
-ADD https://github.com/CosmWasm/wasmvm/releases/download/${LIBWASMVM_VERSION}/libwasmvm_muslc.x86_64.a libwasmvm_muslc.x86_64.a
-ADD https://github.com/CosmWasm/wasmvm/releases/download/${LIBWASMVM_VERSION}/checksums.txt checksums.txt
+ADD https://github.com/CosmWasm/wasmvm/releases/download/${WASM_VERSION}/libwasmvm_muslc.aarch64.a libwasmvm_muslc.aarch64.a
+ADD https://github.com/CosmWasm/wasmvm/releases/download/${WASM_VERSION}/libwasmvm_muslc.x86_64.a libwasmvm_muslc.x86_64.a
+ADD https://github.com/CosmWasm/wasmvm/releases/download/${WASM_VERSION}/checksums.txt checksums.txt
 RUN sha256sum -c --ignore-missing --status checksums.txt && \
     cp libwasmvm_muslc.`uname -m`.a /lib/libwasmvm_muslc.a
 
 # Download Terra
-ADD https://github.com/terra-money/core/archive/refs/tags/${TERRA_VERSION}.tar.gz ${TERRA_VERSION}.tar.gz
+ADD https://github.com/terra-money/core/archive/refs/tags/${BIN_VERSION}.tar.gz ${BIN_VERSION}.tar.gz
 RUN tar xzf ${TERRA_VERSION}.tar.gz && \
     mv core-${TERRA_VERSION#v} terra
 
