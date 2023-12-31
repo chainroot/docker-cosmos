@@ -79,4 +79,4 @@ help:
 all: buildall
 
 checkversion:
-	.github/workflows/update_version.sh $(REPO) $(DIRS)
+	.github/workflows/check_version.sh $(REPO) $(DIRS)
