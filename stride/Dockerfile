@@ -23,9 +23,9 @@ RUN git clone --depth 1 https://github.com/microsoft/mimalloc; \
 
 # Download stride and build
 ADD https://github.com/Stride-Labs/stride/archive/refs/tags/${BIN_VERSION}.tar.gz ${BIN_VERSION}.tar.gz
-RUN tar -xzf ${STRIDE_VERSION}.tar.gz && \
-    cd stride-${STRIDE_VERSION#v} && \
-    LEDGER_ENABLED=true BUILD_TAGS="muslc badgerdb" LDFLAGS="-linkmode=external -extldflags \"-L/code/mimalloc/build -lmimalloc -Wl,-z,muldefs -static\"" make install VERSION=${STRIDE_VERSION#v}
+RUN tar -xzf ${BIN_VERSION}.tar.gz && \
+    cd stride-${BIN_VERSION#v} && \
+    LEDGER_ENABLED=true BUILD_TAGS="muslc badgerdb" LDFLAGS="-linkmode=external -extldflags \"-L/code/mimalloc/build -lmimalloc -Wl,-z,muldefs -static\"" make install VERSION=${BIN_VERSION#v}
 
 # Stage 2: Create minimal runtime image
 FROM alpine:3

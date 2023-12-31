@@ -34,12 +34,12 @@ RUN sha256sum -c --ignore-missing --status checksums.txt && \
 
 # Download Terra
 ADD https://github.com/terra-money/core/archive/refs/tags/${BIN_VERSION}.tar.gz ${BIN_VERSION}.tar.gz
-RUN tar xzf ${TERRA_VERSION}.tar.gz && \
-    mv core-${TERRA_VERSION#v} terra
+RUN tar xzf ${BIN_VERSION}.tar.gz && \
+    mv core-${BIN_VERSION#v} terra
 
 WORKDIR /code/terra
 
-RUN VERSION=${TERRA_VERSION#v} LEDGER_ENABLED=true BUILD_TAGS=muslc LDFLAGS="-linkmode=external -extldflags \"-L/code/mimalloc/build -lmimalloc -Wl,-z,muldefs -static\"" make build 
+RUN VERSION=${BIN_VERSION#v} LEDGER_ENABLED=true BUILD_TAGS=muslc LDFLAGS="-linkmode=external -extldflags \"-L/code/mimalloc/build -lmimalloc -Wl,-z,muldefs -static\"" make build 
 
 FROM alpine:3
 
