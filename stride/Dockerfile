@@ -22,7 +22,6 @@ RUN git clone --depth 1 https://github.com/microsoft/mimalloc; \
 
 
 # Download stride and build
-ADD https://github.com/Stride-Labs/stride/archive/refs/tags/${STRIDE_VERSION}.tar.gz ${STRIDE_VERSION}.tar.gz
 ADD https://github.com/Stride-Labs/stride/archive/refs/tags/${BIN_VERSION}.tar.gz ${BIN_VERSION}.tar.gz
 RUN tar -xzf ${STRIDE_VERSION}.tar.gz && \
     cd stride-${STRIDE_VERSION#v} && \
