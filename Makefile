@@ -22,7 +22,7 @@ endif
 #BIN_VERSION := $(shell cat ./$(DIR)/VERSION | grep binary | awk '{print $$2}')
 #WASM_VERSION := $(shell cat ./$(DIR)/VERSION | grep wasm | awk '{print $$2}')
 
-```# Define a function to get version values
+# Define a function to get version values
 define get_versions
 $(eval GO_VERSION := $(shell cat ./$1/VERSION | grep go | awk '{print $$2}'))
 $(eval BIN_VERSION := $(shell cat ./$1/VERSION | grep binary | awk '{print $$2}'))
