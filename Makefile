@@ -61,6 +61,7 @@ build:
 .PHONY: push
 push:
 	@$(info ****> Pushing $(DIR) -- $(REPO)/$(DIR):$(BRANCH_NAME))
+	@$(call get_versions,$(DIR))
 	@pushd $(DIR) && $(DOCKER_CMD) --push && popd
 
 .PHONY: buildall
@@ -74,7 +75,7 @@ pushall: $(addprefix push-, $(DIRS))
 
 push-%:
 	@$(MAKE) push DIR=$*
-	@$(call get_versions,$(DIR))
+
 
 .PHONY: clean
 clean:
