@@ -32,11 +32,12 @@ jobs:
 
       - name: Get changed files
         id: changed_files
-        uses: tj-actions/changed-files@v37
+        uses: tj-actions/changed-files@v41
         with:
           dir_names: true
           dir_names_max_depth: 1
           files_ignore: .github/**
+          dir_names_exclude_current_dir: true
 
       - name: Push to DockerHub
         run: for DIR in ${{ steps.changed_files.outputs.all_changed_files }}; do
