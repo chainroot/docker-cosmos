@@ -39,9 +39,9 @@ endef
 
 .PHONY: build
 build:
-    @$(call get_versions,$(DIR))
-    @$(info ****> Building $(DIR) -- $(REPO)/$(DIR):$(BRANCH_NAME))
-    @pushd $(DIR) && $(DOCKER_CMD) && popd
+	  @$(call get_versions,$(DIR))
+		@$(info ****> Building $(DIR) -- $(REPO)/$(DIR):$(BRANCH_NAME))
+		@pushd $(DIR) && $(DOCKER_CMD) && popd
 
 
 .PHONY: lint
