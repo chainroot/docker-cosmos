@@ -17,9 +17,12 @@ else
     DOCKER_TAGS := -t $(REPO)/$(DIR):$(BRANCH_NAME)
 endif
 
-GO_VERSION := $(shell cat ./$(DIR)/VERSION | grep go | awk '{print $2}')
-BIN_VERSION := $(shell cat ./$(DIR)/VERSION | grep binary | awk '{print $2}')
-WASM_VERSION := $(shell cat ./$(DIR)/VERSION | grep wasm | awk '{print $2}')
+
+GO_VERSION := $(shell cat ./$(DIR)/VERSION | grep go | awk '{print $$2}')
+BIN_VERSION := $(shell cat ./$(DIR)/VERSION | grep binary | awk '{print $$2}')
+WASM_VERSION := $(shell cat ./$(DIR)/VERSION | grep wasm | awk '{print $$2}')
+
+
 ifeq ($(WASM_VERSION),)
 	BUILD_ARG := --build-arg GO_VERSION=$(GO_VERSION) BIN_VERSION=$(BIN_VERSION)
 else
