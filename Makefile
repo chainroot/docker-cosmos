@@ -98,8 +98,3 @@ all: buildall
 .PHONY: checkversion
 checkversion:
 	.github/scripts/check_version.sh $(REPO) $(DIRS)
-
-
-.PHONY: checkversion
-checkversion:
-	.github/workflows/check_version.sh $(REPO) $(DIRS)
