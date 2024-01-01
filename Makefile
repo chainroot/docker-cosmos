@@ -27,21 +27,11 @@ define get_versions
 $(eval GO_VERSION := $(shell cat ./$1/VERSION | grep go | awk '{print $$2}'))
 $(eval BIN_VERSION := $(shell cat ./$1/VERSION | grep binary | awk '{print $$2}'))
 $(eval WASM_VERSION := $(shell cat ./$1/VERSION | grep wasm | awk '{print $$2}'))
-ifeq ($(WASM_VERSION),)
-	BUILD_ARG := --build-arg GO_VERSION=$(GO_VERSION) --build-arg BIN_VERSION=$(BIN_VERSION)
-else
-	BUILD_ARG := --build-arg GO_VERSION=$(GO_VERSION) --build-arg BIN_VERSION=$(BIN_VERSION) --build-arg WASM_VERSION=$(WASM_VERSION)
-endif
-DOCKER_CMD := docker buildx build $(DOCKER_TAGS) $(BUILD_ARG) .
+# Use shell conditional logic to set BUILD_ARG
+$(eval BUILD_ARG := --build-arg GO_VERSION=$(GO_VERSION) --build-arg BIN_VERSION=$(BIN_VERSION) $(if $(WASM_VERSION), --build-arg WASM_VERSION=$(WASM_VERSION)))
+$(eval DOCKER_CMD := docker buildx build $(DOCKER_TAGS) $(BUILD_ARG) .)
 endef
 
-
-
-.PHONY: build
-build:
-	  @$(call get_versions,$(DIR))
-		@$(info ****> Building $(DIR) -- $(REPO)/$(DIR):$(BRANCH_NAME))
-		@pushd $(DIR) && $(DOCKER_CMD) && popd
 
 
 .PHONY: lint
@@ -55,14 +45,9 @@ lint:
 
 .PHONY: build
 build:
-	@$(info ****> Building $(DIR) -- $(REPO)/$(DIR):$(BRANCH_NAME))
-	@pushd $(DIR) && $(DOCKER_CMD) && popd
-
-.PHONY: push
-push:
-	@$(info ****> Pushing $(DIR) -- $(REPO)/$(DIR):$(BRANCH_NAME))
-	@$(call get_versions,$(DIR))
-	@pushd $(DIR) && $(DOCKER_CMD) --push && popd
+	  @$(call get_versions,$(DIR))
+		@$(info ****> Building $(DIR) -- $(REPO)/$(DIR):$(BRANCH_NAME))
+		@pushd $(DIR) && $(DOCKER_CMD) && popd
 
 .PHONY: buildall
 buildall: $(addprefix build-, $(DIRS))
@@ -70,12 +55,17 @@ buildall: $(addprefix build-, $(DIRS))
 build-%:
 	@$(MAKE) build DIR=$*
 
+.PHONY: push
+push:
+	@$(info ****> Pushing $(DIR) -- $(REPO)/$(DIR):$(BRANCH_NAME))
+	@$(call get_versions,$(DIR))
+	@pushd $(DIR) && $(DOCKER_CMD) --push && popd
+
 .PHONY: pushall
 pushall: $(addprefix push-, $(DIRS))
 
 push-%:
 	@$(MAKE) push DIR=$*
-
 
 .PHONY: clean
 clean:
