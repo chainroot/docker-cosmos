@@ -18,9 +18,22 @@ else
 endif
 
 
-GO_VERSION = $(shell cat ./$(DIR)/VERSION | grep go | awk '{print $$2}')
-BIN_VERSION := $(shell cat ./$(DIR)/VERSION | grep binary | awk '{print $$2}')
-WASM_VERSION := $(shell cat ./$(DIR)/VERSION | grep wasm | awk '{print $$2}')
+#GO_VERSION = $(shell cat ./$(DIR)/VERSION | grep go | awk '{print $$2}')
+#BIN_VERSION := $(shell cat ./$(DIR)/VERSION | grep binary | awk '{print $$2}')
+#WASM_VERSION := $(shell cat ./$(DIR)/VERSION | grep wasm | awk '{print $$2}')
+
+```# Define a function to get version values
+define get_versions
+$(eval GO_VERSION := $(shell cat ./$1/VERSION | grep go | awk '{print $$2}'))
+$(eval BIN_VERSION := $(shell cat ./$1/VERSION | grep binary | awk '{print $$2}'))
+$(eval WASM_VERSION := $(shell cat ./$1/VERSION | grep wasm | awk '{print $$2}'))
+endef
+
+.PHONY: build
+build:
+    @$(call get_versions,$(DIR))
+    @$(info ****> Building $(DIR) -- $(REPO)/$(DIR):$(BRANCH_NAME))
+    @pushd $(DIR) && $(DOCKER_CMD) && popd
 
 
 ifeq ($(WASM_VERSION),)
@@ -61,6 +74,7 @@ pushall: $(addprefix push-, $(DIRS))
 
 push-%:
 	@$(MAKE) push DIR=$*
+	@$(call get_versions,$(DIR))
 
 .PHONY: clean
 clean:
