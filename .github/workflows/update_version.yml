@@ -1,4 +1,4 @@
-name: Update Check
+name: Automated Version Update Check
 
 on:
   schedule:
