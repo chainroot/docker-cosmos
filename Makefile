@@ -5,10 +5,7 @@ REPO := chainroot
 DIRS := $(shell ls */Dockerfile | xargs dirname)
 BRANCH_NAME := $(shell git symbolic-ref -q --short HEAD)
 
-# DOCKER_TAGS configuration:
-# When on the 'main' branch, we read the VERSION file and construct Docker tags for each version
-# specified in the file. Additionally, we tag the image as 'latest'.
-# When on any other branch, we tag the image with the branch name.
+
 ifeq ($(BRANCH_NAME), main)
     VERSION := $(shell cat ./$(DIR)/VERSION)
     DOCKER_TAGS := $(foreach version, $(VERSION), -t $(REPO)/$(DIR):$(version))
@@ -17,10 +14,6 @@ else
     DOCKER_TAGS := -t $(REPO)/$(DIR):$(BRANCH_NAME)
 endif
 
-
-#GO_VERSION = $(shell cat ./$(DIR)/VERSION | grep go | awk '{print $$2}')
-#BIN_VERSION := $(shell cat ./$(DIR)/VERSION | grep binary | awk '{print $$2}')
-#WASM_VERSION := $(shell cat ./$(DIR)/VERSION | grep wasm | awk '{print $$2}')
 
 # Define a function to get version values
 define get_versions
