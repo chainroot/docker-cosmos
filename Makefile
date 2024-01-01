@@ -27,21 +27,21 @@ define get_versions
 $(eval GO_VERSION := $(shell cat ./$1/VERSION | grep go | awk '{print $$2}'))
 $(eval BIN_VERSION := $(shell cat ./$1/VERSION | grep binary | awk '{print $$2}'))
 $(eval WASM_VERSION := $(shell cat ./$1/VERSION | grep wasm | awk '{print $$2}'))
+ifeq ($(WASM_VERSION),)
+	BUILD_ARG := --build-arg GO_VERSION=$(GO_VERSION) --build-arg BIN_VERSION=$(BIN_VERSION)
+else
+	BUILD_ARG := --build-arg GO_VERSION=$(GO_VERSION) --build-arg BIN_VERSION=$(BIN_VERSION) --build-arg WASM_VERSION=$(WASM_VERSION)
+endif
+DOCKER_CMD := docker buildx build $(DOCKER_TAGS) $(BUILD_ARG) .
 endef
+
+
 
 .PHONY: build
 build:
     @$(call get_versions,$(DIR))
     @$(info ****> Building $(DIR) -- $(REPO)/$(DIR):$(BRANCH_NAME))
     @pushd $(DIR) && $(DOCKER_CMD) && popd
-
-
-ifeq ($(WASM_VERSION),)
-	BUILD_ARG := --build-arg GO_VERSION=$(GO_VERSION) BIN_VERSION=$(BIN_VERSION)
-else
-	BUILD_ARG := --build-arg GO_VERSION=$(GO_VERSION) BIN_VERSION=$(BIN_VERSION) WASM_VERSION=$(WASM_VERSION)
-endif
-DOCKER_CMD := docker buildx build $(DOCKER_TAGS) $(BUILD_ARG) . 
 
 
 .PHONY: lint
