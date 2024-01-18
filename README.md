@@ -1,51 +1,98 @@
 # Docker-Cosmos
 
-Welcome to Docker-Cosmos, a repository containing configurations for running multiple Cosmos based networks as Docker containers. Each network configuration resides in a separate folder, equipped with its own Docker Compose and .env sample file preconfigured with default values.
+## Introduction
 
-The configurations are organized in three categories, namely `APP`, `CLIENT`, and `CONFIG`, each represented with corresponding environment variables. The structured naming convention of the variables, using double underscores as separators, helps in organizing and identifying the settings with ease, providing a hierarchical perspective to the configuration options.
+Welcome to Docker-Cosmos, a repository managed by [chainroot](https://github.com/chainroot) for deploying and managing Docker containers for various Cosmos-based blockchain networks. This repository automates the process of version management and Docker image deployment, ensuring that each network runs the latest version of its respective blockchain software.
 
-## Environment Variables
+## Features
 
-Detailed tables representing each environment variable, along with their descriptions and default values, can be found in the README.md file within each network's directory.
+- **Automated Version Management**: Automatically fetches and updates the versions of blockchain networks.
+- **Docker Support**: Each network has its Docker configuration for easy setup and deployment.
+- **Scalability**: Designed to support and manage multiple blockchain networks.
+- **CI/CD Integration**: Utilizes GitHub Actions for continuous integration and deployment.
+- **Comprehensive Logging and Error Handling**: Ensures smooth operation and ease of troubleshooting.
 
-Before starting a container, ensure to customize the `SNAPSHOT_BLOCK_HEIGHT` and `CONFIG__MONIKER_NAME` variables according to your specific requirements. These variables are crucial for correct network operation and must be set appropriately.
+## Prerequisites
 
-## Docker Setup
+Before you begin, ensure you have the following installed:
+- Docker
+- Docker Compose
+- Python 3
+- [ruamel.yaml](https://pypi.org/project/ruamel.yaml/) Python package
 
-Docker Compose files are provided to simplify the process of setting up each Cosmos network software. 
+## Setup
 
-### Prerequisites
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/chainroot/docker-cosmos.git
+   cd docker-cosmos
+   ```
 
-Ensure Docker and Docker Compose are installed on your machine. If not, follow the official Docker installation guide [here](https://docs.docker.com/get-docker/) and Docker Compose installation guide [here](https://docs.docker.com/compose/install/).
+2. **Install Python Dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-### Usage
+## Usage
 
-Each Docker Compose file runs the latest version of the Cosmos network Docker image, maps the necessary ports, and mounts a volume to persist data.
+### Updating Versions
 
-Follow these steps to get your container running:
-
-1. Clone the repository:
+To update the versions of the blockchain networks to the latest state:
 
 ```bash
-git clone https://github.com/chainroot/docker-cosmos.git
+make check_version
 ```
 
-2. Navigate into the directory of the desired network:
+This command runs the `check_version.py` script, which checks for the latest versions of each network and updates the `VERSION` file and `docker-compose.yml` files accordingly.
+
+### Building Docker Images
+
+To build Docker images for all networks:
 
 ```bash
-cd docker-cosmos/<network_directory>
+make buildall
 ```
 
-3. Edit the `.env` file and set your desired values for the environment variables, particularly `SNAPSHOT_BLOCK_HEIGHT` and `CONFIG__MONIKER_NAME`.
-
-4. Run the Docker Compose command:
+To build a Docker image for a specific network (e.g., `cosmos`):
 
 ```bash
-docker-compose up -d
+make build DIR=cosmos
 ```
 
-This will start the Cosmos network software in a Docker container, with the network being accessible at ports 26656 and 26657. The `-d` flag tells Docker to run the container in the background.
+### Pushing Docker Images
+
+To push Docker images for all networks:
+
+```bash
+make pushall
+```
+
+To push a Docker image for a specific network:
+
+```bash
+make push DIR=cosmos
+```
+
+### Running Tests
+
+To run tests for all Docker images:
+
+```bash
+make test
+```
+
+### Cleaning Up
+
+To remove Docker images:
+
+```bash
+make clean
+```
 
 ## Contributing
 
-Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are greatly appreciated. If you have a suggestion that would make this better, please fork the repo and create a pull request. 
+Contributions to Docker-Cosmos are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) for details on how to contribute.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
