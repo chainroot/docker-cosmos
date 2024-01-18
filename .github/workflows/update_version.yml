@@ -1,0 +1,36 @@
+name: Automated Version Update Check
+
+on:
+  schedule:
+    - cron: '*/15 * * * *' 
+
+permissions:
+  pull-requests: write
+  repository-projects: write
+
+jobs:
+  update-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: check versions
+        run: make checkversion
+      
+      
+      - name: Commit & Push changes
+        uses: actions-js/push@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          message: "fix: updated versions"
+          branch: main
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          delete-branch: true
+          base: main
+          head: bot-update-branch
+          title: "fix: Automated Update on versions"
+          body: "This is an automated update by bot."
