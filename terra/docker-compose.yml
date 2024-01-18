@@ -2,13 +2,12 @@ version: '3'
 
 services:
   terra:
-    image: chainroot/terra:latest
+    image: chainroot/terra:v2.9.2
     restart: always
     ulimits:
       nofile:
         soft: 65536
         hard: 65536
-    env_file: .env
     ports:
       - 26656:26656
       - 26657:26657

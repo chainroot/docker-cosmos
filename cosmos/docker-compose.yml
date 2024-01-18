@@ -2,16 +2,15 @@ version: '3'
 
 services:
   cosmos:
-    image: chainroot/cosmos:13.0.2
+    image: chainroot/cosmos:v14.1.0
     restart: always
     ulimits:
       nofile:
         soft: 65536
         hard: 65536
-    env_file: .env
     ports:
       - 26656:26656
       - 26657:26657
     # In order to persist data
     volumes:
-     - ./data:/gaia/.gaia
+      - ./data:/gaia/.gaia
