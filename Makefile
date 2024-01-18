@@ -7,7 +7,7 @@ BRANCH_NAME := $(shell git symbolic-ref -q --short HEAD)
 
 
 ifeq ($(BRANCH_NAME), main)
-    VERSION := $(shell cat ./$(DIR)/VERSION)
+    VERSION := $(shell cat ./$(DIR)/VERSION | grep binary | awk '{print $$2}')
     DOCKER_TAGS := $(foreach version, $(VERSION), -t $(REPO)/$(DIR):$(version))
     DOCKER_TAGS += -t $(REPO)/$(DIR):latest
 else
@@ -39,7 +39,7 @@ lint:
 .PHONY: build
 build:
 	  @$(call get_versions,$(DIR))
-		@$(info ****> Building $(DIR) -- $(REPO)/$(DIR):$(BRANCH_NAME))
+		@$(info ****> Building $(DIR) -- $(REPO)/$(DIR):$(BRANCH_NAME) -- $(DOCKER_CMD))
 		@pushd $(DIR) && $(DOCKER_CMD) && popd
 
 .PHONY: buildall
@@ -90,4 +90,4 @@ all: buildall
 
 .PHONY: checkversion
 checkversion:
-	python3 .github/workflows/scripts/check_version.py
+	python3 check_version.py
