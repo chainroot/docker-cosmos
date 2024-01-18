@@ -1,9 +1,10 @@
 # Stage 1: Build stage
-FROM golang:1.20-alpine AS go-builder
+ARG GO_VERSION
+FROM golang:$GO_VERSION-alpine AS go-builder
 ARG arch=x86_64
-
-ENV GAIA_VERSION=v13.0.2
-ENV PACKAGES git cmake ca-certificates build-base curl make libc-dev bash gcc linux-headers eudev-dev python3 libusb-dev
+ARG WASM_VERSION
+ARG BIN_VERSION
+ENV PACKAGES git cmake ca-certificates build-base curl make libc-dev bash gcc linux-headers eudev-dev python3 libusb-dev coreutils
 
 RUN set -eux; \
     apk add --no-cache $PACKAGES
@@ -22,10 +23,10 @@ RUN git clone --depth 1 https://github.com/microsoft/mimalloc; \
     rm -rf mimalloc
 
 # Download Gaia and extract tgz
-ADD https://github.com/cosmos/gaia/archive/refs/tags/${GAIA_VERSION}.tar.gz ${GAIA_VERSION}.tar.gz
-RUN tar -xzf ${GAIA_VERSION}.tar.gz && \
-  cd gaia-${GAIA_VERSION#v} && \
-  LEDGER_ENABLED=true BUILD_TAGS=muslc LDFLAGS="-linkmode=external -extldflags \"-L/code/mimalloc/build -lmimalloc -Wl,-z,muldefs -static\"" make install VERSION=${GAIA_VERSION#v}
+ADD https://github.com/cosmos/gaia/archive/refs/tags/${BIN_VERSION}.tar.gz ${BIN_VERSION}.tar.gz
+RUN tar -xzf ${BIN_VERSION}.tar.gz && \
+  cd gaia-${BIN_VERSION#v} && \
+  LEDGER_ENABLED=true BUILD_TAGS=muslc LDFLAGS="-linkmode=external -extldflags \"-L/code/mimalloc/build -lmimalloc -Wl,-z,muldefs -static\"" make install VERSION=${BIN_VERSION#v}
 
 # Stage 2: Final stage
 FROM alpine:3
@@ -33,10 +34,8 @@ FROM alpine:3
 RUN apk add --no-cache lz4 tar gettext && \
     addgroup -g 1211 gaia && \
     adduser -G gaia -u 1210 -D -h /gaia gaia && \
-    mkdir -p /gaia/.gaia/config /gaia/.gaia/data && \
     chown gaia:gaia -R /gaia
 
-COPY ./config /gaia/config-sample
 COPY ./entrypoint.sh /gaia
 RUN chown gaia:gaia /gaia/entrypoint.sh && \
     chmod +x /gaia/entrypoint.sh
@@ -46,7 +45,7 @@ WORKDIR /gaia
 
 COPY --from=go-builder /go/bin/gaiad /usr/local/bin/gaiad
 
-# rest, grpc, p2p, rpc
+    #  rest, grpc, p2p, rpc
 EXPOSE 1317 9090 26656 26657
 
 CMD ["sh", "-c", "/gaia/entrypoint.sh"]
